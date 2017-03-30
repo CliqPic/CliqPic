@@ -1,0 +1,96 @@
+<div class='card-panel'>
+  <div class='row'>
+    <%= form_for(event, html: { class: 'col s12' }) do |f| %>
+      <% if event.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(event.errors.count, "error") %> prohibited this event from being saved:</h2>
+
+          <ul>
+            <% event.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="input-field col s12">
+        <%= f.label :name %>
+        <%= f.text_field :name, maxlength: 255, 'data-length': 255, required: 'required' %>
+      </div>
+
+      <div class="input-field col s12">
+        <%= label_tag 'event[date]', 'Event Date' %>
+        <%= date_field_tag 'event[date]', (@event.start_time and @event.start_time.strftime('%F')), class: 'datepicker' %>
+      </div>
+
+      <div class="input-field col s6">
+        <%= label_tag 'event[start_time]', 'Start Time' %>
+        <%= time_field_tag 'event[start_time]', (@event.start_time and @event.start_time.strftime('%r')), class: 'timepicker' %>
+      </div>
+
+      <div class="input-field col s6">
+        <%= label_tag 'event[end_time]', 'End Time' %>
+        <%= time_field_tag 'event[end_time]', (@event.end_time and @event.end_time.strftime('%r')), class: 'timepicker' %>
+      </div>
+
+      <div class="input-field col s12">
+        <%= f.label :location %>
+        <%= f.text_area :location, class: 'materialize-textarea' %>
+      </div>
+
+      <div class="input-field col s12">
+        <%= f.label :hashtags %>
+        <div class='chips'>
+        </div>
+        <%= f.hidden_field :hashtags %>
+      </div>
+
+      <div class="actions col s12">
+        <%= f.submit class: 'btn' %>
+        <a href='<%= @event.persisted? ? event_path(@event) : dashboard_path %>' class='btn grey'>Cancel</a>
+      </div>
+    <% end %>
+
+    <script>
+     $(function() {
+       $('.datepicker').pickadate();
+       $('.timepicker').pickatime();
+       $('.chips').on('chip.add', function(e, chip) {
+         var currentTags = $('#event_hashtags').val().split(','),
+             newTag = chip.tag.replace(/,/g, ''); // stip commas
+
+         console.log(currentTags);
+
+         // handle no tags at all by properly initializing as an empty array
+         if(!currentTags[0]) {
+           currentTags = [];
+         }
+
+         // Strip leading hashtags for storage
+         if(newTag.startsWith('#')) {
+           newTag = newTag.slice(1);
+         }
+
+         currentTags.push(newTag)
+         $('#event_hashtags').val(currentTags.join(','));
+       }).on('chip.delete', function(e, chip) {
+         var currentTags = $('#event_hashtags').val().split(','),
+             oldTag = chip.tag.replace('#', ''),
+             tagIndex = currentTags.indexOf(oldTag);
+
+         if(tagIndex > -1) {
+           currentTags.splice(tagIndex, 1);
+           $('#event_hashtags').val(currentTags.join(','));
+         }
+       }).material_chip({
+         data: [
+           <% event.hashtags.to_s.split(',').each do |tag| %>
+             { tag : "#<%= tag %>" },
+           <% end %>
+         ]
+       });
+       Materialize.updateTextFields();
+     });
+    </script>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ * require_tree .
+ *= require_self
+ *= require materialize.clockpicker.css
+ */
+
+@import "components/color";
+
+$primary-color: #004C75;
+
+@import "components/variables";
+
+$roboto-font-path: "/assets/roboto/";
+
+// Generate hover classes
+@each $color_name, $color in $colors {
+  @each $color_type, $color_value in $color {
+    @if $color_type == "base" {
+      .hover-#{$color_name}:hover {
+        background-color: $color_value !important;
+      }
+      .hover-#{$color_name}-text:hover {
+        color: $color_value !important;
+      }
+    }
+    @else if $color_name != "shades" {
+      .hover-#{$color_name}.hover-#{$color_type}:hover {
+        background-color: $color_value !important;
+      }
+      .hover-#{$color_name}-text.hover-text-#{$color_type}:hover {
+        color: $color_value !important;
+      }
+    }
+  }
+}
+
+// Shade classes
+@each $color, $color_value in $shades {
+  .hover-#{$color}:hover {
+    background-color: $color_value !important;
+  }
+  .hover-#{$color}-text:hover {
+    color: $color_value !important;
+  }
+}
+
+@import "materialize";
+
+.brand-logo {
+  height: 100%;
+
+  img {
+    height: 100%;
+    padding: 5px;
+    margin-bottom: -20px; // to center the text
+  }
+}
+
+.card .card-image .card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: #fff;
+  background: rgba(255,255,255,0.7);
+
+  text-shadow: -1px 1px #fff;
+
+  .card-title {
+    position: static;
+    color: black;
+    padding: 0;
+  }
+}
+
+.btn.pulse {
+  position: relative;
+  z-index: 2;
+
+  &:before {
+    left: 0;
+  }
+}

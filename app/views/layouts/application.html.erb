@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CliqPiq</title>
+    <%= csrf_meta_tags %>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body class='grey lighten-5'>
+    <div class='container'>
+      <nav class='<%= 'nav-extended' if content_for? :nav_content %>'>
+        <div class='nav-wrapper'>
+          <%= link_to dashboard_path, class: 'brand-logo' do %>
+            <%= image_tag 'cliq_pic_logo-white.png' %> CliqPic
+          <% end %>
+          <ul class='right'>
+            <li><%= link_to 'logout', destroy_user_session_path, method: :delete %></li>
+          </ul>
+        </div>
+
+        <% if content_for? :nav_content %>
+          <div class='nav-content'>
+            <%= yield :nav_content %>
+          </div>
+        <% end %>
+
+      </nav>
+      <% # TODO: Need better styling on these flash messages. %>
+      <% #       Maybe some kind of floating alert? %>
+      <script>
+       <% flash.each do |name, msg| %>
+       (function() {
+         var $toastMessage = $('<%= content_tag :div, msg, class: name %>'),
+             color = 'black white-text';
+         
+         switch('<%= name %>') {
+           case 'notice':
+             color = 'light-blue accent-1 grey-text text-darken-4';
+             break;
+         }
+         Materialize.toast($toastMessage, 2500, color);
+       }())
+       <% end %>
+      </script>
+
+      <main>
+        <%= yield %>
+      </main>
+    </div>
+  </body>
+</html>

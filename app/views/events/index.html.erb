@@ -1,0 +1,76 @@
+<% if notice %>
+  <p id="notice"><%= notice %></p>
+<% end %>
+
+<header class='card'>
+  <div class='card-content'>
+    <h2>Events</h2>
+  </div>
+  <div class='card-action' style='text-align: right'>
+    <%= link_to 'New Event', new_event_path, class: 'btn' %>
+  </div>
+</header>
+
+<% if @events.size < 1 %>
+  <section class='card-panel' style='text-align: center'>
+    <h5>You don't have any events yet.</h5>
+    <%= link_to 'Create one now!', new_event_path, class: 'btn btn-large' %>
+  </section>
+<% else %>
+  <% @events.each_with_index do |event, index| %>
+    <% # Close old row before opening a new one %>
+    <% if index > 0 and index % 2 == 0 %>
+      </div>
+    <% end %>
+
+    <% if index % 2 == 0 %>
+      <div class='row'>
+    <% end %>
+
+    <div class='col s12 m6'>
+      <section class='event card'>
+        <div class='card-image'>
+          <%= link_to event do %>
+            <!-- <img src='http://placehold.it/300?text=No+Image' alt='' /> -->
+            <img src='http://i.imgur.com/R8lX4P7.png' alt='' />
+            <div class='card-content black-text'>
+              <header class='card-title'><%= event.name %></header>
+              <% if event.start_time %>
+                <p>
+                  <%= event.start_time.strftime('%D') %>
+                  <% if event.end_time %>
+                    from <%= event.start_time.strftime('%l:%M %p') %>
+                    to <%= event.end_time.strftime('%l:%M %p') %>
+                  <% else %>
+                    @ <%= event.start_time.strftime('%l:%M %p') %>
+                  <% end %>
+                </p>
+              <% end %>
+
+              <% unless event.location.blank? %>
+                <p>@ <%= event.location.split("\n").join(', ') %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class='card-action'>
+          <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1',
+            'data-tooltip': 'View Albums', 'data-position': 'top', 'data-delay': 50 do %>
+            <i class='material-icons'>perm_media</i>
+          <% end %>
+          <%= link_to edit_event_path(event), class: 'btn-flat tooltipped grey-text text-darken-1',
+            'data-tooltip': 'Edit Event', 'data-position': 'top',
+            'data-delay': 50 do %>
+            <i class='material-icons'>mode_edit</i>
+          <% end %>
+          <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
+            'data-tooltip': 'Delete Event', 'data-position': 'top', 'data-delay': 50,
+            method: :delete, data: { confirm: 'Are you sure?' } do %>
+            <i class='material-icons'>delete</i>
+          <% end %>
+        </div>
+      </section>
+    </div>
+  <% end %>
+<% end %>
