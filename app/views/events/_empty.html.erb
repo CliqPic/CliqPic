@@ -1,0 +1,72 @@
+<section style='text-align: center; padding: 24px;'>
+  <% if @event.images.size > 0 %>
+    <h5>YOU HAVEN'T MADE ANY ALBUMS YET</h5>
+    <%= link_to 'Create An Album Now!', new_event_album_path(@event), class: 'btn btn-large blue darken-4' %>
+  <% elsif @event.fetching_images? %>
+    <div class="preloader-wrapper big active">
+      <div class="spinner-layer spinner-blue">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-red">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-yellow">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+
+      <div class="spinner-layer spinner-green">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+    <h5>WE'RE FETCHING YOUR IMAGES</h5>
+    <p>Give us a few moments to find some.</p>
+    <script>
+     (function() {
+       var refresher = refresher;
+       // set page to automatically refresh while we're searching for images.
+       $(document).on('turbolinks:load', function() {
+         refresher = setTimeout(function() {
+           Turbolinks.visit(location.toString());
+         }, (1333 * 5));
+
+         // remove this handler so that we don't end up with tons of them on
+         // the document object
+         $(document).off('turbolinks:load');
+       }).on('turbolinks:click', function() {
+         clearTimeout(refresher);
+       });
+     }())
+    </script>
+  <% else %>
+    <i class='large material-icons'>error</i>
+    <h5>WE COULDN'T FIND ANY IMAGES</h5>
+    <p>Make sure your event's location, hashtags, and date correspond to the images you want to include in it.</p>
+    <%= link_to 'Edit this Event', edit_event_path(@event), class: 'btn btn-large blue darken-4' %>
+  <% end %>
+</section>

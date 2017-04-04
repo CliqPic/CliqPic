@@ -1,14 +1,31 @@
-<p id="notice"><%= notice %></p>
+<header class='card'>
+  <div class='card-content'>
+    <h5 class='card-title'>
+      <span class='right thin'><%= pluralize(@album.images.count, 'image').upcase %></span>
+      <%= @album.name.upcase %>
+    </h5>
+  </div>
+  <div class='card-action' style='text-align: right;'>
+    <%= link_to 'Edit Album Details', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
+    <%= link_to 'Add/Remove Images', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
+    <%= link_to 'Back to Event', @event, class: 'btn-flat black-text' %>
+  </div>
+</header>
 
-<p>
-  <strong>Name:</strong>
-  <%= @album.name %>
-</p>
+<% @album.images.each_with_index do |image, index| %>
+  <% if index > 0 and index % 2 == 0 %>
+    </div>
+  <% end %>
 
-<p>
-  <strong>Event:</strong>
-  <%= @album.event %>
-</p>
+  <% if index % 2 == 0 %>
+    <div class='row'>
+  <% end %>
 
-<%= link_to 'Edit', edit_album_path(@album) %> |
-<%= link_to 'Back', albums_path %>
+  <div class='col s12 m6'>
+    <section class='image card'>
+      <div class='card-image'>
+        <%= tag :img, src: image.thumbnail_url %>
+      </div>
+    </section>
+  </div>
+<% end %>

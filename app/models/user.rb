@@ -3,9 +3,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :registerable, :rememberable, :trackable,
          :validatable, :lockable, :omniauthable,
+         # We don't actually provide a login form, but Devise doesn't seem to
+         # work very well if you don't provide this
+         :database_authenticatable,
          omniauth_providers: [:instagram]
-
-  devise :database_authenticatable if Rails.env.development?
 
   has_many :events
   has_many :images

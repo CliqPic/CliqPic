@@ -1,0 +1,5 @@
+<script>
+ (function(msg, color) {
+   Materialize.toast(msg, 2500, color)
+ }("<%= args.join('","').html_safe %>"))
+</script>

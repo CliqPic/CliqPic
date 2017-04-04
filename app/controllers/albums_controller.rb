@@ -1,10 +1,11 @@
 class AlbumsController < ApplicationController
+  before_action :set_event, except: [:destroy]
   before_action :set_album, only: [:show, :edit, :update, :destroy]
 
   # GET /albums
   # GET /albums.json
   def index
-    @albums = Album.all
+    @albums = @event.albums
   end
 
   # GET /albums/1
@@ -24,11 +25,16 @@ class AlbumsController < ApplicationController
   # POST /albums
   # POST /albums.json
   def create
-    @album = Album.new(album_params)
+    image_ids = params[:album][:image_ids]
+
+    raise 'No Image IDs' if image_ids.nil?
+
+    @album = @event.albums.new(album_params)
 
     respond_to do |format|
       if @album.save
-        format.html { redirect_to @album, notice: 'Album was successfully created.' }
+        @album.add_images_by_id(image_ids)
+        format.html { redirect_to [@event, @album], notice: 'Album was successfully created.' }
         format.json { render :show, status: :created, location: @album }
       else
         format.html { render :new }
@@ -42,7 +48,7 @@ class AlbumsController < ApplicationController
   def update
     respond_to do |format|
       if @album.update(album_params)
-        format.html { redirect_to @album, notice: 'Album was successfully updated.' }
+        format.html { redirect_to [@event, @album], notice: 'Album was successfully updated.' }
         format.json { render :show, status: :ok, location: @album }
       else
         format.html { render :edit }
@@ -56,19 +62,24 @@ class AlbumsController < ApplicationController
   def destroy
     @album.destroy
     respond_to do |format|
-      format.html { redirect_to albums_url, notice: 'Album was successfully destroyed.' }
+      format.html { redirect_to @event, notice: 'Album was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_album
-      @album = Album.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def album_params
-      params.require(:album).permit(:name, :event_id)
-    end
+  def set_event
+    @event = Event.find(params[:event_id])
+  end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_album
+    @album = @event.albums.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def album_params
+    params.require(:album).permit(:name)
+  end
 end

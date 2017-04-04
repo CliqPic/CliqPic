@@ -4,10 +4,10 @@
 
 <header class='card'>
   <div class='card-content'>
-    <h2>Events</h2>
+    <h5 class='card-title'>YOUR EVENTS</h5>
   </div>
   <div class='card-action' style='text-align: right'>
-    <%= link_to 'New Event', new_event_path, class: 'btn' %>
+    <%= link_to 'New Event', new_event_path, class: 'btn-flat black-text' %>
   </div>
 </header>
 
@@ -31,8 +31,12 @@
       <section class='event card'>
         <div class='card-image'>
           <%= link_to event do %>
-            <!-- <img src='http://placehold.it/300?text=No+Image' alt='' /> -->
-            <img src='http://i.imgur.com/R8lX4P7.png' alt='' />
+            <% album = event.albums.first %>
+            <% unless album.nil? %>
+              <%= tag :img, src: album.images.first.thumbnail_url.to_s %>
+            <% else %>
+              <%= tag :img, src: event.placeholder_image %>
+            <% end %>
             <div class='card-content black-text'>
               <header class='card-title'><%= event.name %></header>
               <% if event.start_time %>
@@ -60,8 +64,7 @@
             <i class='material-icons'>perm_media</i>
           <% end %>
           <%= link_to edit_event_path(event), class: 'btn-flat tooltipped grey-text text-darken-1',
-            'data-tooltip': 'Edit Event', 'data-position': 'top',
-            'data-delay': 50 do %>
+            'data-tooltip': 'Edit Event', 'data-position': 'top', 'data-delay': 50 do %>
             <i class='material-icons'>mode_edit</i>
           <% end %>
           <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',

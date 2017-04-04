@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :events do
+    get '/albums', to: redirect('/events/%{event_id}/')
     resources :albums
   end
   get '/dashboard', to: 'events#index'

@@ -1,27 +1,58 @@
-<%= form_for(album) do |f| %>
+<%= form_for([@event, album]) do |f| %>
   <% if album.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(album.errors.count, "error") %> prohibited this album from being saved:</h2>
-
-      <ul>
-      <% album.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
+    <% album.errors.full_messages.each do |message| %>
+      <%= render 'error_toast', message: message %>
+    <% end %>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %>
-    <%= f.text_area :name %>
-  </div>
+  <section class='card'>
+    <div class='card-content'>
+      <h5 class='card-title'><%= title %></h5>
+      <div class="field">
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+      </div>
+    </div>
+    <div class="card-action" style='text-align: right'>
+      <span class='left'>SELECT IMAGES BELOW</span>
+      <%= f.submit class: 'btn blue darken-4' %>
+      <%= link_to 'Cancel', @event, class: 'btn grey' %>
+    </div>
+  </section>
 
-  <div class="field">
-    <%= f.label :event_id %>
-    <%= f.text_field :event_id %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div class='row'>
+    <%
+    # The idea here is to only display 1 record for each unique image.
+    # For our purposes, an image is considered a duplicate when it has the same
+    # thumbnail_url as another image.
+    # Further, we're trying to ensure the actual records used will correctly
+    # Correspond to the album (if they exist on the album)
+    %>
+    <% (album.images + @event.images).uniq(&:thumbnail_url).each do |image| %>
+      <% selected = album.images.include?(image) %>
+      <div class='col s12 m6 xl4 image-select'>
+        <label>
+          <div class='card<%= ' selected z-depth-4' if selected %>'>
+            <div class='card-image'>
+              <%= tag :img, src: image.thumbnail_url.to_s %>
+            </div>
+          </div>
+          <%= check_box_tag 'album[image_ids][]', image.id, selected %>
+        </label>
+      </div>
+    <% end %>
   </div>
 <% end %>
+<script>
+ $(function() {
+   var selectedImages = 0;
+
+   $('.image-select input').on('click', function(e) {
+     var $this = $(this),
+         selected = $this.is(':checked');
+
+     $this.parent().find('.card').toggleClass('selected z-depth-4', selected);
+     selectedImages += (selected ? 1 : -1);
+   });
+ });
+</script>

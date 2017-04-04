@@ -1,89 +1,58 @@
 <header class='card'>
   <div class='card-content'>
-    <% if @event.start_time %>
-      <span class='right'><%= @event.start_time.strftime('%D') %></span>
-    <% end %>
-    <h3><%= @event.name %></h3>
-    <span class='right'><%= @event.images.size %> images found for this event.</span>
+    <div class='right thin'>
+      <% if @event.start_time %>
+        <%= @event.start_time.strftime('%D') %><br/>
+      <% end %>
+      <% if @event.images.size > 0 or @event.fetching_images? %>
+        <div><%= pluralize(@event.images.size, 'image').upcase %></div>
+      <% end %>
+    </div>
+    <h5 class='card-title'>
+      <%= @event.name.upcase %>
+    </h5>
   </div>
   <div class='card-action' style='text-align: right;'>
-    <%= link_to 'Edit Event', edit_event_path(@event), class: 'btn' %>
-    <%= link_to 'Add Album', new_event_album_path(@event), class: 'btn' %>
+    <%= link_to 'Edit Event', edit_event_path(@event), class: 'btn-flat black-text' %>
+    <%= link_to 'Add Album', new_event_album_path(@event), class: 'btn-flat black-text' %>
+    <%= link_to 'Back to Dashboard', dashboard_path, class: 'btn-flat black-text' %>
   </div>
 </header>
 
 <% if @event.albums.size < 1 %>
-  <section class='card-panel' style='text-align: center'>
-    <% if @event.images.size > 0 %>
-      <h5>You haven't made any albums yet.</h5>
-      <%= link_to 'Create One Now!', new_event_album_path(@event), class: 'btn btn-large' %>
-    <% elsif @event.fetching_images? %>
-      <div class="preloader-wrapper big active">
-        <div class="spinner-layer spinner-blue">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
+  <%= render 'empty' %>
+<% else %>
+  <section class='row'>
+    <% @event.albums.each do |album| %>
+      <div class='col s12 m6'>
+        <section class='album card'>
+          <div class='card-image'>
+            <%= link_to [@event, album] do %>
+              <%= tag :img, src: album.images.first.thumbnail_url.to_s %>
+              <div class='card-content'>
+                <header class='card-title'><%= album.name.upcase %></header>
+              </div>
+            <% end %>
           </div>
-        </div>
 
-        <div class="spinner-layer spinner-red">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
+          <div class='card-action'>
+            <%= link_to([@event, album], class: 'btn-flat tooltipped grey-text text-darken-1',
+                       'data-tooltip': 'View Images', 'data-position': 'top', 'data-delay': 50) do %>
+              <i class='material-icons'>perm_media</i>
+            <% end %>
+            <%= link_to(edit_event_album_path(@event, album), class: 'btn-flat tooltipped grey-text text-darken-1',
+                        'data-tooltip': 'Edit Album', 'data-position': 'top', 'data-delay': 50) do %>
+              <i class='material-icons'>mode_edit</i>
+            <% end %>
+            <%= link_to([@event, album],
+                        class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
+                        'data-tooltip': 'Delete Album', 'data-position': 'top', 'data-delay': 50,
+                        method: :delete, data: { confirm: 'Are you sure?' }) do %>
+              <i class='material-icons'>delete</i>
+            <% end %>
           </div>
-        </div>
-
-        <div class="spinner-layer spinner-yellow">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
-
-        <div class="spinner-layer spinner-green">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
+        </section>
       </div>
-      <h5>We're fetching your images!</h5>
-      <p>Give us a few moments to find some.</p>
-      <script>
-       (function() {
-         var refresher = refresher;
-         // set page to automatically refresh while we're searching for images.
-         $(document).on('turbolinks:load', function() {
-           refresher = setTimeout(function() {
-             Turbolinks.visit(location.toString());
-           }, (1333 * 5));
-
-           // remove this handler so that we don't end up with tons of them on
-           // the document object
-           $(document).off('turbolinks:load');
-         }).on('turbolinks:click', function() {
-           clearTimeout(refresher);
-         });
-       }())
-      </script>
-    <% else %>
-      <i class='large material-icons'>error</i>
-      <h5>Oh, crud.  We couldn't find any images.</h5>
-      <p>Make sure your event's location, hashtags, and date correspond to the images you want to include in it.</p>
-      <%= link_to 'Edit this Event', edit_event_path(@event), class: 'btn btn-large' %>
     <% end %>
   </section>
-<% else %>
 <% end %>
