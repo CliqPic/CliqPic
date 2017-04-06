@@ -8,6 +8,7 @@
   <div class='card-action' style='text-align: right;'>
     <%= link_to 'Edit Album Details', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
     <%= link_to 'Add/Remove Images', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
+    <%= link_to 'Download Images', event_album_path(@event, @album, format: :zip), class: 'btn-flat black-text' %>
     <%= link_to 'Back to Event', @event, class: 'btn-flat black-text' %>
   </div>
 </header>

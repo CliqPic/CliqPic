@@ -11,6 +11,22 @@ class AlbumsController < ApplicationController
   # GET /albums/1
   # GET /albums/1.json
   def show
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :show }
+      format.zip  do
+        if current_user.email.blank?
+          # TODO: Better handling for this
+          flash[:error] = 'Email required to zip images'
+        else
+          @album.zip_images_for(current_user)
+
+          flash[:success] = "Your images will be emailed to you soon"
+        end
+
+        redirect_to [@event, @album]
+      end
+    end
   end
 
   # GET /albums/new

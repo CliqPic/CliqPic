@@ -12,6 +12,10 @@ module AlbumsImageHelper
     add_image(image)
   end
 
+  def zip_images_for(user)
+    ZipImagesJob.perform_later(self.id, user.id)
+  end
+
   protected
 
   def add_image(image)

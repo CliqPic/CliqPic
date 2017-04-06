@@ -1,8 +1,6 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
-  ENV['INSTAGRAM_APP_ID'] = 'f90e75f25ddf465b8b68edcc66fffee0'
-  ENV['INSTAGRAM_APP_SECRET'] = 'c1480ba3617c461e96bcfde7519dab3f'
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.

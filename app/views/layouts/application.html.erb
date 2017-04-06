@@ -37,10 +37,7 @@
 
       </nav>
       <% flash.each do |name, msg| %>
-        <% color = 'black white-text' %>
-        <% color = 'blue lighten-5 blue-grey-text text-darken-4' if name == 'notice' %>
-        <% color = 'green lighten-4 green-text text-darken-4' if name == 'success' %>
-        <%= render 'toast', args: [msg, color] %>
+        <%= render("#{name}_toast", message: msg) rescue render('toast', args: [msg, 'black white-text']) %>
       <% end %>
 
       <main>

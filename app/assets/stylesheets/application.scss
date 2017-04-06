@@ -68,21 +68,59 @@ $roboto-font-path: "/assets/roboto/";
   }
 }
 
-.card .card-image .card-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.card .card-image {
+  overflow: hidden;
+  
+  .card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-  background: #fff;
-  background: rgba(255,255,255,0.7);
+    background-color: #333;
+    background-color: rgba(0,0,0,0.5);
 
-  text-shadow: -1px 1px #fff;
+    .background-blur {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
 
-  .card-title {
-    position: static;
-    color: black;
-    padding: 0;
+      background-size: 100%;
+      background-position: bottom left;
+
+      -webkit-filter: blur(15px);
+      -moz-filter: blur(15px);
+      -o-filter: blur(15px);
+      -ms-filter: blur(15px);
+      filter: blur(15px);
+
+      &:before {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: #333;
+        background-color: rgba(0,0,0,0.5);
+
+        content: ' ';
+      }
+    }
+
+    .card-title {
+      position: relative;
+      padding: 0;
+      z-index: 2;
+    }
+
+    p {
+      position: relative;
+      z-index: 2;
+    }
   }
 }
 

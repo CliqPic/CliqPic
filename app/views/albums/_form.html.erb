@@ -14,9 +14,9 @@
       </div>
     </div>
     <div class="card-action" style='text-align: right'>
-      <span class='left'>SELECT IMAGES BELOW</span>
+      <strong class='left'>Select Images Below</strong>
       <%= f.submit class: 'btn blue darken-4' %>
-      <%= link_to 'Cancel', @event, class: 'btn grey' %>
+      <%= link_to 'Cancel', album.persisted? ? [@event, album] : @event, class: 'btn grey' %>
     </div>
   </section>
 

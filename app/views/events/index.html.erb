@@ -32,12 +32,15 @@
         <div class='card-image'>
           <%= link_to event do %>
             <% album = event.albums.first %>
-            <% unless album.nil? %>
-              <%= tag :img, src: album.images.first.thumbnail_url.to_s %>
-            <% else %>
-              <%= tag :img, src: event.placeholder_image %>
-            <% end %>
-            <div class='card-content black-text'>
+            <% image_url = unless album.nil?
+              album.images.first.thumbnail_url.to_s
+            else
+              event.placeholder_image
+            end
+            %>
+            <%= tag :img, src: image_url %>
+            <div class='card-content white-text'>
+              <div class='background-blur'  style='background-image: url("<%= image_url %>")'></div>
               <header class='card-title'><%= event.name %></header>
               <% if event.start_time %>
                 <p>

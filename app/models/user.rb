@@ -13,9 +13,22 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     where(uid: auth.uid).first_or_create do |user|
-      # Garbage email just so I can get auth working
-      user.email = "#{auth.uid}@instagram.com"
+      user.email = auth.info.email.to_s
+      user.name  = auth.info.name.to_s
       user.password = Devise.friendly_token[0,25]
     end
+  end
+
+  def name
+    [self.first_name, self.middle_name, self.last_name].join(' ').strip
+  end
+
+  # Sets the name fields based on a full name
+  def name=(new_name)
+    name_parts = new_name.split(' ')
+
+    self.first_name = name_parts.shift.to_s
+    self.last_name = name_parts.pop.to_s
+    self.middle_name = name_parts.join(' ')
   end
 end

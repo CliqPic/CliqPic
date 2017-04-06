@@ -1,5 +1,1 @@
-<h2>Editing <%= @album.name %></h2>
-
-<%= render 'form', album: @album %>
-
-<%= link_to 'Back', [@event, @album] %>
+<%= render 'form', album: @album, title: "Editing #{@album.name}".upcase %>
