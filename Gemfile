@@ -15,7 +15,7 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+# gem 'therubyracer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -37,6 +37,7 @@ gem 'omniauth', '~> 1.3', '>= 1.3.1'
 gem 'omniauth-instagram', '~> 1.0', '>= 1.0.2'
 
 # Background Jobs
+gem 'hiredis', '~> 0.6.1'
 gem 'sidekiq', '~> 4.2', '>= 4.2.10'
 gem 'sidekiq-unique-jobs', '~> 4.0', '>= 4.0.18'
 
@@ -68,4 +69,4 @@ group :development do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data'

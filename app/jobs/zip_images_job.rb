@@ -2,9 +2,6 @@ class ZipImagesJob < ApplicationJob
   queue_as :default
 
   def perform(album_id, user_id, *args)
-    puts "#{ENV['RAILS_ENV']}, #{ENV['RACK_ENV']}, #{Rails.env}"
-    print "#{ActiveRecord::Base.connection_config.inspect}\n"
-    logger.error(ActiveRecord::Base.connection_config.inspect)
     user  = User.find(user_id)
     album = Album.find(album_id)
 

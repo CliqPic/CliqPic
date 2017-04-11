@@ -16,5 +16,6 @@
 # Ignore Byebug command history file.
 .byebug_history
 
-# Ignore secret config options stored as initializers
+# Ignore secret config options
 config/initializers/000_secrets.rb
+docker-compose.env

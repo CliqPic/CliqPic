@@ -64,6 +64,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hashie (3.5.5)
+    hiredis (0.6.1)
     i18n (0.8.1)
     instagram (1.1.6)
       faraday (>= 0.7, < 0.10)
@@ -212,6 +213,8 @@ GEM
     turbolinks-source (5.0.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2017.2)
+      tzinfo (>= 1.0.0)
     uglifier (3.1.9)
       execjs (>= 0.3.0, < 3)
     warden (1.2.7)
@@ -232,6 +235,7 @@ DEPENDENCIES
   byebug
   devise (~> 4.2)
   geokit (~> 1.11)
+  hiredis (~> 0.6.1)
   instagram (~> 1.1, >= 1.1.6)
   jbuilder (~> 2.5)
   jquery-rails

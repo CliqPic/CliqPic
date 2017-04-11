@@ -20,10 +20,14 @@ default: &default
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("RDS_HOSTNAME") { 'localhost' } %>
+  port: <%= ENV.fetch("RDS_PORT") { 5432 } %>
+  username: <%= ENV.fetch('RDS_USERNAME') { 'cliq_piq' } %>
+  password: <%= ENV.fetch('RDS_PASSWORD') { 'cliq_piq_developer' } %>
 
 development:
   <<: *default
-  database: cliq_piq_development
+  database: <%= ENV.fetch('RDS_DB_NAME') { 'cliq_piq_development' } %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -80,6 +84,4 @@ test:
 #
 production:
   <<: *default
-  database: cliq_piq_production
-  username: cliq_piq
-  password: <%= ENV['CLIQ_PIQ_DATABASE_PASSWORD'] %>
+  database: <%= ENV['RDS_DB_NAME'] %>

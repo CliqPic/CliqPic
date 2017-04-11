@@ -1,0 +1,20 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefinitions": [
+    {
+      "name": "server",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.3",
+      "portMapppings": [
+        {
+          "hostPort": "80",
+          "containerPort": "3000"
+        }
+      ]
+    },
+    {
+      "name": "sidekiq",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.3",
+      "command": ["bundle", "exec", "sidekiq"]
+    }
+  ]
+}
