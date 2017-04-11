@@ -1,5 +1,7 @@
 FROM ruby:2.4.1-alpine
 
+EXPOSE 3000
+
 WORKDIR /data/amdirent/cliq-pic
 
 COPY Gemfile* ./
