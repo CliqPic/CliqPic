@@ -9,10 +9,11 @@ class User < ApplicationRecord
          omniauth_providers: [:instagram]
 
   has_many :events
+  has_many :albums, through: :events
   has_many :images
 
   def self.from_omniauth(auth)
-    where(uid: auth.uid).first_or_create do |user|
+    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email.to_s
       user.name  = auth.info.name.to_s
       user.password = Devise.friendly_token[0,25]
@@ -31,4 +32,8 @@ class User < ApplicationRecord
     self.last_name = name_parts.pop.to_s
     self.middle_name = name_parts.join(' ')
   end
+
+  protected
+
+  def email_required?; false; end
 end

@@ -4,7 +4,11 @@ class Album < ApplicationRecord
 
   validates :name, presence: true
 
-  include AlbumsImageHelper
+  include AddImageHelper
 
   before_destroy :detach_all_images
+
+  def zip_images_for(user)
+    ZipImagesJob.perform_later(self.id, user.id)
+  end
 end

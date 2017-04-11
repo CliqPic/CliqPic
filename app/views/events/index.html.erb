@@ -32,12 +32,7 @@
         <div class='card-image'>
           <%= link_to event do %>
             <% album = event.albums.first %>
-            <% image_url = unless album.nil?
-              album.images.first.thumbnail_url.to_s
-            else
-              event.placeholder_image
-            end
-            %>
+            <% image_url = display_image(event) %>
             <%= tag :img, src: image_url %>
             <div class='card-content white-text'>
               <div class='background-blur'  style='background-image: url("<%= image_url %>")'></div>

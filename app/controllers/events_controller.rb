@@ -30,7 +30,7 @@ class EventsController < ApplicationController
     # Process incoming dates and times so that we end up with the right thing
     ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
     
-    @event = current_user.events.new(ep)
+    @event = current_user.events.new(ep.merge(fetching_images: true))
 
     respond_to do |format|
       if @event.save
@@ -89,8 +89,8 @@ class EventsController < ApplicationController
       return { start_time: nil, end_time: nil } if start_date.blank?
 
       parsed_date  = Date.parse(start_date).iso8601
-      parsed_start = DateTime.parse(start_time)
-      parsed_end   = DateTime.parse(end_time)
+      parsed_start = Time.zone.parse("#{start_time}")
+      parsed_end   = Time.zone.parse("#{end_time}")
 
       { start_time: (DateTime.parse("#{parsed_date}T#{parsed_start.strftime('%T%:z')}") rescue nil),
         end_time:   (DateTime.parse("#{parsed_date}T#{parsed_end.strftime('%T%:z')}") rescue nil)

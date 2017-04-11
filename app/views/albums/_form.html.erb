@@ -30,7 +30,7 @@
     %>
     <% (album.images + @event.images).uniq(&:thumbnail_url).each do |image| %>
       <% selected = album.images.include?(image) %>
-      <div class='col s12 m6 xl4 image-select'>
+      <div class='col s12 m6 l3 image-select'>
         <label>
           <div class='card<%= ' selected z-depth-4' if selected %>'>
             <div class='card-image'>

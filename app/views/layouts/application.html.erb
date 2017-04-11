@@ -44,5 +44,23 @@
         <%= yield %>
       </main>
     </div>
+
+    <script>
+     (function() {
+       var user_tz = <%= (user_signed_in? ? current_user.time_zone : request.session[:time_zone]) || 'null' %>,
+           real_tz = -(new Date().getTimezoneOffset() * 60);
+
+       if(user_tz !== real_tz) {
+         $.ajax({
+           url: '/set-tz',
+           method: 'PUT',
+           content_type: 'application/json',
+           data: {
+             time_zone: real_tz
+           }
+         });
+       }
+     }())
+    </script>
   </body>
 </html>

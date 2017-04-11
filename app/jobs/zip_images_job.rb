@@ -30,5 +30,7 @@ class ZipImagesJob < ApplicationJob
     end
 
     ZippedImageMailer.send_zip(user, album.name, final_path).deliver_now
+
+    File.delete(final_path)
   end
 end

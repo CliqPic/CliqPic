@@ -13,20 +13,16 @@
   </div>
 </header>
 
-<% @album.images.each_with_index do |image, index| %>
-  <% if index > 0 and index % 2 == 0 %>
+<div class='row'>
+  <% @album.images.each_with_index do |image, index| %>
+    <div class='col s12 m6 l3'>
+      <section class='image card'>
+        <div class='card-image'>
+          <%= link_to image.high_res_url, target: '_blank' do %>
+            <%= tag :img, src: image.thumbnail_url %>
+          <% end %>
+        </div>
+      </section>
     </div>
   <% end %>
-
-  <% if index % 2 == 0 %>
-    <div class='row'>
-  <% end %>
-
-  <div class='col s12 m6'>
-    <section class='image card'>
-      <div class='card-image'>
-        <%= tag :img, src: image.thumbnail_url %>
-      </div>
-    </section>
-  </div>
-<% end %>
+</div>

@@ -28,9 +28,9 @@
         <section class='album card'>
           <div class='card-image'>
             <%= link_to [@event, album] do %>
-              <%= tag :img, src: album.images.first.thumbnail_url.to_s %>
+              <%= tag :img, src: album.images.first.low_res_url.to_s %>
               <div class='card-content'>
-                <div class='background-blur', style='background-image: url("<%= album.images.first.thumbnail_url.to_s %>")'></div>
+                <div class='background-blur', style='background-image: url("<%= album.images.first.low_res_url.to_s %>")'></div>
                 <header class='card-title'><%= album.name.upcase %></header>
               </div>
             <% end %>

@@ -1,13 +1,27 @@
 class Event < ApplicationRecord
   belongs_to :user
-  has_many :albums
+  has_many :albums, dependent: :destroy
   has_many :images
 
-  def placeholder_image
-    if images.size > 0
-      images.first.thumbnail_url
-    else
-      "http://placehold.it/700?text=#{ fetching_images ? 'Looking+for+Images' : 'No+Images+Found'}"
+  before_destroy :detach_all_images
+
+  after_create :queue_image_processor
+  # Update images only if something key about the event changes
+  after_save :queue_image_processor, if: 'self.start_time_changed? or
+                                          self.end_time_changed? or
+                                          self.hashtags_changed? or
+                                          self.location_changed?'
+
+  validate do
+    if self.hashtags.blank? and (self.start_time.blank? or self.end_time.blank?) and self.location.blank?
+      errors.add(:base, :invalid, message: 'Must supply a date range, location, or hashtags')
     end
+  end
+
+  include AddImageHelper
+
+  def queue_image_processor
+    ProcessImageToEventJob::FanoutImagesJob.perform_later(self.id)
+    ScrapeImagesJob.perform_later(self.user_id)
   end
 end

@@ -97,3 +97,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+def build_omniauth(uid)
+  OpenStruct.new(provider: 'instagram', uid: uid, info: OpenStruct.new(email: nil, name: nil))
+end

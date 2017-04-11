@@ -62,8 +62,13 @@ class AlbumsController < ApplicationController
   # PATCH/PUT /albums/1
   # PATCH/PUT /albums/1.json
   def update
+    image_ids = params[:album][:image_ids]
+
+    raise 'No Image IDs' if image_ids.nil?
+
     respond_to do |format|
       if @album.update(album_params)
+        @album.prune_images_to(image_ids)
         format.html { redirect_to [@event, @album], notice: 'Album was successfully updated.' }
         format.json { render :show, status: :ok, location: @album }
       else
