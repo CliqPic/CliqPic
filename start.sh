@@ -1,2 +1,2 @@
 bin/rails db:migrate
-bin/rails server
+bin/rails server -b 0.0.0.0
