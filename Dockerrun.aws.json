@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "server",
-      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.6",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.7",
       "memoryReservation": "128",
       "portMappings": [
         {
@@ -14,7 +14,7 @@
     },
     {
       "name": "sidekiq",
-      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.6",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.7",
       "memoryReservation": "256",
       "command": ["bundle", "exec", "sidekiq"]
     }
