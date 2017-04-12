@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411012040) do
+ActiveRecord::Schema.define(version: 20170412202608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,7 +61,6 @@ ActiveRecord::Schema.define(version: 20170411012040) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "provider",                            null: false
     t.string   "uid",                                 null: false
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -83,8 +82,9 @@ ActiveRecord::Schema.define(version: 20170411012040) do
     t.text     "last_name"
     t.text     "middle_name"
     t.integer  "time_zone"
-    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.text     "provider"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+    t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   end
 
   add_foreign_key "albums", "events"
