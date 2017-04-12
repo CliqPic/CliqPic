@@ -19,3 +19,8 @@
 # Ignore secret config options
 config/initializers/000_secrets.rb
 docker-compose.env
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
