@@ -1,6 +1,19 @@
 class ProcessImageToEventJob < ApplicationJob
   queue_as :default
 
+  after_enqueue do |job|
+    event_id = job.arguments.second
+
+    Event.increment_counter(:image_process_counter, event_id) unless job.provider_job_id.nil?
+  end
+
+  after_perform do |job|
+    event_id = job.arguments.second
+    Event.decrement_counter(:image_process_counter, event_id)
+    event = Event.find event_id
+    event.update(fetching_images: event.image_process_counter != 0)
+  end
+
   def perform(image_id, event_id)
     image = Image.find image_id
     event = Event.find event_id
@@ -42,7 +55,9 @@ class ProcessImageToEventJob < ApplicationJob
 
     def perform(image_id)
       events = Event.select(:id).where(user_id: Image.find(image_id).user_id)
-      events.each { |e| ProcessImageToEventJob.perform_later(image_id, e.id) }
+      events.each do |e|
+        ProcessImageToEventJob.set(wait: 5.seconds).perform_later(image_id, e.id)
+      end
     end
   end
 
@@ -53,11 +68,9 @@ class ProcessImageToEventJob < ApplicationJob
     queue_as :default
 
     # Queue a ProcessImageToEventJob for each image found
-    # Has three modes of operation based on inputs:
+    # Has two modes of operation based on inputs:
     # when user_id == nil
     #   Queue a job for each image owned by this event's user
-    # when user_id == false
-    #   Queue a job for each image owned by this event
     # when user_id.is_a? Integer
     #   Queue a job for each image owned by the given user
     def perform(event_id, user_id=nil)
@@ -65,7 +78,7 @@ class ProcessImageToEventJob < ApplicationJob
 
       images = Image.select(:id).where(user_id: user_id)
 
-      images.each { |i| ProcessImageToEventJob.perform_later(i.id, event_id) }
+      images.each { |i| ProcessImageToEventJob.set(wait: 5.seconds).perform_later(i.id, event_id) }
     end
   end
 end

@@ -5,7 +5,7 @@ class Event < ApplicationRecord
 
   before_destroy :detach_all_images
 
-  after_create :queue_image_processor
+  after_commit :queue_image_processor, on: :create
   # Update images only if something key about the event changes
   after_save :queue_image_processor, if: 'self.start_time_changed? or
                                           self.end_time_changed? or
