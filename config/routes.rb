@@ -5,7 +5,13 @@ Rails.application.routes.draw do
   end
   get '/dashboard', to: 'events#index'
 
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
+  devise_for :users,
+             controllers: { omniauth_callbacks: 'users/omniauth_callbacks' },
+             skip: [:sessions, :registration]
+
+  devise_scope :users do
+    delete '/users/sign_out', :to => 'devise/sessions#destroy', :as => :destroy_user_session
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   put '/set-tz', to: 'application#set_time_zone'
