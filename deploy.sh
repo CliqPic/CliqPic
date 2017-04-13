@@ -44,7 +44,7 @@ sudo docker push 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$
 # Finally, deploy to beanstalk
 if command -v eb > /dev/null 2>&1
 then
-    eb deploy Custome-env -l "cliq-pic-$2"
+    eb deploy Custom-env -l "cliq-pic-$2"
 elif [ -f "$HOME/.local/bin/eb" ]
 then
     $("$HOME/.local/bin/eb") deploy Custom-env -l "cliq-pic-$2"
