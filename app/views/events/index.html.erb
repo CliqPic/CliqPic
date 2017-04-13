@@ -28,61 +28,63 @@
    });
   </script>
 <% else %>
-  <% @events.each_with_index do |event, index| %>
-    <% # Close old row before opening a new one %>
-    <% if index > 0 and index % 2 == 0 %>
+  <section class='events'>
+    <% @events.each_with_index do |event, index| %>
+      <% # Close old row before opening a new one %>
+      <% if index > 0 and index % 2 == 0 %>
+        </div>
+      <% end %>
+
+      <% if index % 2 == 0 %>
+        <div class='row'>
+      <% end %>
+
+      <div class='col s12 m6'>
+        <section class='event card'>
+          <div class='card-image'>
+            <%= link_to event do %>
+              <% album = event.albums.first %>
+              <% image_url = display_image(event) %>
+              <%= tag :img, src: image_url %>
+              <div class='card-content white-text'>
+                <div class='background-blur'  style='background-image: url("<%= image_url %>")'></div>
+                <header class='card-title'><%= event.name %></header>
+                <% if event.start_time %>
+                  <p>
+                    <%= event.start_time.strftime('%D') %>
+                    <% if event.end_time %>
+                      from <%= event.start_time.strftime('%l:%M %p') %>
+                      to <%= event.end_time.strftime('%l:%M %p') %>
+                    <% else %>
+                      @ <%= event.start_time.strftime('%l:%M %p') %>
+                    <% end %>
+                  </p>
+                <% end %>
+
+                <% unless event.location.blank? %>
+                  <p>@ <%= event.location.split("\n").join(', ') %></p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class='card-action'>
+            <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1',
+              'data-tooltip': 'View Albums', 'data-position': 'top', 'data-delay': 50 do %>
+              <i class='material-icons'>perm_media</i>
+            <% end %>
+            <%= link_to edit_event_path(event), class: 'btn-flat tooltipped grey-text text-darken-1',
+              'data-tooltip': 'Edit Event', 'data-position': 'top', 'data-delay': 50 do %>
+              <i class='material-icons'>mode_edit</i>
+            <% end %>
+            <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
+              'data-tooltip': 'Delete Event', 'data-position': 'top', 'data-delay': 50,
+              method: :delete, data: { confirm: 'Are you sure?' } do %>
+              <i class='material-icons'>delete</i>
+            <% end %>
+          </div>
+        </section>
       </div>
     <% end %>
-
-    <% if index % 2 == 0 %>
-      <div class='row'>
-    <% end %>
-
-    <div class='col s12 m6'>
-      <section class='event card'>
-        <div class='card-image'>
-          <%= link_to event do %>
-            <% album = event.albums.first %>
-            <% image_url = display_image(event) %>
-            <%= tag :img, src: image_url %>
-            <div class='card-content white-text'>
-              <div class='background-blur'  style='background-image: url("<%= image_url %>")'></div>
-              <header class='card-title'><%= event.name %></header>
-              <% if event.start_time %>
-                <p>
-                  <%= event.start_time.strftime('%D') %>
-                  <% if event.end_time %>
-                    from <%= event.start_time.strftime('%l:%M %p') %>
-                    to <%= event.end_time.strftime('%l:%M %p') %>
-                  <% else %>
-                    @ <%= event.start_time.strftime('%l:%M %p') %>
-                  <% end %>
-                </p>
-              <% end %>
-
-              <% unless event.location.blank? %>
-                <p>@ <%= event.location.split("\n").join(', ') %></p>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-
-        <div class='card-action'>
-          <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1',
-            'data-tooltip': 'View Albums', 'data-position': 'top', 'data-delay': 50 do %>
-            <i class='material-icons'>perm_media</i>
-          <% end %>
-          <%= link_to edit_event_path(event), class: 'btn-flat tooltipped grey-text text-darken-1',
-            'data-tooltip': 'Edit Event', 'data-position': 'top', 'data-delay': 50 do %>
-            <i class='material-icons'>mode_edit</i>
-          <% end %>
-          <%= link_to event, class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
-            'data-tooltip': 'Delete Event', 'data-position': 'top', 'data-delay': 50,
-            method: :delete, data: { confirm: 'Are you sure?' } do %>
-            <i class='material-icons'>delete</i>
-          <% end %>
-        </div>
-      </section>
-    </div>
-  <% end %>
+  </section>
 <% end %>
