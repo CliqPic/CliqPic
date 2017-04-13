@@ -16,10 +16,14 @@ class AlbumsController < ApplicationController
       format.html { render :show }
       format.json { render :show }
       format.zip  do
-        if current_user.email.blank?
-          # TODO: Better handling for this
+        if current_user.email.blank? and params[:email].blank?
           flash[:error] = 'Email required to zip images'
         else
+          unless params[:email].blank? or current_user.email == params[:email]
+            current_user.email = params[:email]
+            current_user.save
+          end
+
           @album.zip_images_for(current_user)
 
           flash[:success] = "Your images will be emailed to you soon"

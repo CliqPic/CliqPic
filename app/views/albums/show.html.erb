@@ -22,7 +22,7 @@
       </li>
 
       <li>
-        <%= link_to event_album_path(@event, @album, format: :zip), class: 'btn-floating blue darken-2 white-text tooltipped',
+        <%= link_to '#share-album-modal', class: 'btn-floating blue darken-2 white-text tooltipped',
           'data-tooltip': 'Download Images', 'data-position': 'left', 'data-delay': '50' do %>
           <i class='material-icons'>file_download</i>
         <% end %>
@@ -42,6 +42,27 @@
         <% end %>
       </li>
     </ul>
+  </div>
+
+  <div class='modal' id='share-album-modal'>
+    <%= form_tag(event_album_path(@event, @album, format: :zip), method: 'get') do %>
+      <div class='modal-content'>
+        <h5>Download Album</h5>
+        <p>
+          <strong>This can take a while.</strong>
+          Enter your email below and we'll email you your images once we've collected them.
+        </p>
+        <div class='field'>
+          <%= label_tag(:email) %>
+          <%= email_field_tag(:email, current_user.email, required: 'required') %>
+        </div>
+
+        <div class='modal-footer'>
+          <a href='#!' class='btn-flat'>Cancel</a>
+          <%= submit_tag('Download', class: 'btn-flat hover-blue hover-darken-4 hover-white-text') %>
+        </div>
+      </div>
+    <% end %>
   </div>
 <% end %>
 
