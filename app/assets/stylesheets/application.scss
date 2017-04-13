@@ -18,7 +18,7 @@
 
 @import "components/color";
 
-$primary-color: #004C75;
+/* $primary-color: #004C75; */
 
 @import "components/variables";
 
@@ -58,13 +58,50 @@ $roboto-font-path: "/assets/roboto/";
 
 @import "materialize";
 
-.brand-logo {
-  height: 100%;
+body {
+  background-image: url('/assets/002-Watercolor-Paper.png');
+}
+
+main {
+  .row:first-child {
+    margin-top: 20px;
+  }
+
+  .row:last-child {
+    margin-bottom: 0;
+  }
+}
+
+nav.main-nav.nav-extended .nav-wrapper {
+  min-height: 0;
+}
+
+.nav-extended .logo-wrapper {
+  height: 30px;
+  line-height: 2em;
+}
+
+.logo-wrapper {
+  @extend .blue.darken-4;
+
+  overflow: hidden;
+
+  ul a {
+    margin-right: -15px;
+  }
+
+  .brand-logo {
+    height: 100%;
+  }
+
+  .container {
+    height: 100%;
+  }
 
   img {
     height: 100%;
-    padding: 5px;
-    margin-bottom: -20px; // to center the text
+    padding: 2px;
+    vertical-align: top;
   }
 }
 

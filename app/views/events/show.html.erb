@@ -9,15 +9,43 @@
       <% end %>
     </div>
     <h5 class='card-title'>
-      <%= @event.name.upcase %>
+      <%= @event.name %>
     </h5>
   </div>
-  <div class='card-action' style='text-align: right;'>
-    <%= link_to 'Edit Event', edit_event_path(@event), class: 'btn-flat black-text' %>
-    <%= link_to 'Add Album', new_event_album_path(@event), class: 'btn-flat black-text' %>
-    <%= link_to 'Back to Dashboard', dashboard_path, class: 'btn-flat black-text' %>
-  </div>
 </header>
+
+<% if user_signed_in? %>
+  <div class='fixed-action-btn'>
+    <a class='btn-floating btn-large blue darken-4'>
+      <i class='material-icons'>menu</i>
+    </a>
+
+    <ul>
+      <li>
+        <%= link_to dashboard_path, class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Back to Dashboard', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>arrow_back</i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to edit_event_path(@event), class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Edit Event', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>mode_edit</i>
+        <% end %>
+      </li>
+
+      <% if @event.images.size > 1 %>
+        <li>
+          <%= link_to new_event_album_path(@event), class: 'btn-floating blue darken-2 white-text tooltipped',
+            'data-tooltip': 'Create Album', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>library_add</i>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
 <% if @event.albums.size < 1 %>
   <%= render 'empty' %>
@@ -31,27 +59,29 @@
               <%= tag :img, src: album.images.first.low_res_url.to_s %>
               <div class='card-content'>
                 <div class='background-blur', style='background-image: url("<%= album.images.first.low_res_url.to_s %>")'></div>
-                <header class='card-title'><%= album.name.upcase %></header>
+                <header class='card-title'><%= album.name %></header>
               </div>
             <% end %>
           </div>
 
-          <div class='card-action'>
-            <%= link_to([@event, album], class: 'btn-flat tooltipped grey-text text-darken-1',
-                       'data-tooltip': 'View Images', 'data-position': 'top', 'data-delay': 50) do %>
-              <i class='material-icons'>perm_media</i>
-            <% end %>
-            <%= link_to(edit_event_album_path(@event, album), class: 'btn-flat tooltipped grey-text text-darken-1',
-                        'data-tooltip': 'Edit Album', 'data-position': 'top', 'data-delay': 50) do %>
-              <i class='material-icons'>mode_edit</i>
-            <% end %>
-            <%= link_to([@event, album],
-                        class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
-                        'data-tooltip': 'Delete Album', 'data-position': 'top', 'data-delay': 50,
-                        method: :delete, data: { confirm: 'Are you sure?' }) do %>
-              <i class='material-icons'>delete</i>
-            <% end %>
-          </div>
+          <% if user_signed_in? %>
+            <div class='card-action'>
+              <%= link_to([@event, album], class: 'btn-flat tooltipped grey-text text-darken-1',
+                          'data-tooltip': 'View Images', 'data-position': 'top', 'data-delay': 50) do %>
+                <i class='material-icons'>photo_album</i>
+              <% end %>
+              <%= link_to(edit_event_album_path(@event, album), class: 'btn-flat tooltipped grey-text text-darken-1',
+                          'data-tooltip': 'Edit Album', 'data-position': 'top', 'data-delay': 50) do %>
+                <i class='material-icons'>mode_edit</i>
+              <% end %>
+              <%= link_to([@event, album],
+                          class: 'btn-flat tooltipped grey-text text-darken-1 hover-red hover-grey-text hover-text-lighten-5',
+                          'data-tooltip': 'Delete Album', 'data-position': 'top', 'data-delay': 50,
+                          method: :delete, data: { confirm: 'Are you sure?' }) do %>
+                <i class='material-icons'>delete</i>
+              <% end %>
+            </div>
+          <% end %>
         </section>
       </div>
     <% end %>

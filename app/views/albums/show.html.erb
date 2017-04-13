@@ -1,17 +1,49 @@
 <header class='card'>
   <div class='card-content'>
     <h5 class='card-title'>
-      <span class='right thin'><%= pluralize(@album.images.count, 'image').upcase %></span>
-      <%= @album.name.upcase %>
+      <small class='right thin'><%= pluralize(@album.images.count, 'image').upcase %></small>
+      <%= @album.name %>
     </h5>
   </div>
-  <div class='card-action' style='text-align: right;'>
-    <%= link_to 'Edit Album Details', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
-    <%= link_to 'Add/Remove Images', edit_event_album_path(@event, @album), class: 'btn-flat black-text' %>
-    <%= link_to 'Download Images', event_album_path(@event, @album, format: :zip), class: 'btn-flat black-text' %>
-    <%= link_to 'Back to Event', @event, class: 'btn-flat black-text' %>
-  </div>
 </header>
+
+<% if user_signed_in? %>
+  <div class='fixed-action-btn'>
+    <a class='btn-floating btn-large blue darken-4'>
+      <i class='material-icons'>menu</i>
+    </a>
+
+    <ul>
+      <li>
+        <%= link_to @event, class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>arrow_back</i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to event_album_path(@event, @album, format: :zip), class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Download Images', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>file_download</i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Add/Remove Images', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>exposure</i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Edit Album', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>mode_edit</i>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+<% end %>
 
 <div class='row'>
   <% @album.images.each_with_index do |image, index| %>

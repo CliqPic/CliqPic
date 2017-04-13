@@ -1,4 +1,5 @@
 class AlbumsController < ApplicationController
+  before_action :authenticate_user!, except: [:show]
   before_action :set_event, except: [:destroy]
   before_action :set_album, only: [:show, :edit, :update, :destroy]
 

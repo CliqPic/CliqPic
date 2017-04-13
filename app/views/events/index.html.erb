@@ -2,20 +2,31 @@
   <p id="notice"><%= notice %></p>
 <% end %>
 
-<header class='card'>
-  <div class='card-content'>
-    <h5 class='card-title'>YOUR EVENTS</h5>
-  </div>
-  <div class='card-action' style='text-align: right'>
-    <%= link_to 'New Event', new_event_path, class: 'btn-flat black-text' %>
-  </div>
-</header>
+<div class='fixed-action-btn'>
+  <%= link_to new_event_path, class: 'btn-floating btn-large blue darken-4 tooltipped', id: 'new-event-button',
+              'data-tooltip': 'Create Event', 'data-position': 'left', 'data-delay': '50' do %>
+    <i class='material-icons'>library_add</i>
+  <% end %>
+</div>
 
 <% if @events.size < 1 %>
-  <section class='card-panel' style='text-align: center'>
-    <h5>You don't have any events yet.</h5>
-    <%= link_to 'Create one now!', new_event_path, class: 'btn btn-large' %>
-  </section>
+
+  <div class='tap-target blue white-text' data-activates='new-event-button'>
+    <div class='tap-target-content'>
+      <div style='padding-left: 10px'>
+        <h5>You don't have any events yet!</h5>
+        <p class='flow-text'>
+          Click this button to get started making your first event!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+   $(function() {
+     $('.tap-target').tapTarget('open');
+   });
+  </script>
 <% else %>
   <% @events.each_with_index do |event, index| %>
     <% # Close old row before opening a new one %>

@@ -18,24 +18,31 @@
   </head>
 
   <body class='grey lighten-5'>
-    <div class='container'>
-      <nav class='<%= 'nav-extended' if content_for? :nav_content %>'>
-        <div class='nav-wrapper blue darken-4'>
-          <%= link_to dashboard_path, class: 'brand-logo' do %>
-            <%= image_tag 'cliq_pic_logo-white.png' %> CLIQ PIC
-          <% end %>
-          <ul class='right'>
-            <li><%= link_to 'LOGOUT', destroy_user_session_path, method: :delete %></li>
-          </ul>
-        </div>
-
-        <% if content_for? :nav_content %>
-          <div class='nav-content'>
-            <%= yield :nav_content %>
+    <nav class='main-nav white black-text <%= 'nav-extended' unless current_page? root_path %>'>
+      <div class='nav-wrapper'>
+        <div class='logo-wrapper'>
+          <div class='container'>
+            <%= link_to dashboard_path, class: (current_page?(root_path) ? 'brand-logo' : '') do %>
+              <%= image_tag 'cliq_pic_logo-white.png' %> CLIQ PIC
+            <% end %>
+            
+            <% if user_signed_in? %>
+              <ul class='right'>
+                <li><%= link_to 'LOGOUT', destroy_user_session_path, method: :delete %></li>
+              </ul>
+            <% end %>
           </div>
-        <% end %>
+        </div>
+      </div>
 
-      </nav>
+      <% if content_for? :nav_content %>
+        <div class='nav-content container'>
+          <%= yield :nav_content %>
+        </div>
+      <% end %>
+    </nav>
+      
+    <div class='container'>
       <% flash.each do |name, msg| %>
         <%= render("#{name}_toast", message: msg) rescue render('toast', args: [msg, 'black white-text']) %>
       <% end %>
@@ -46,6 +53,11 @@
     </div>
 
     <script>
+     $(function() {
+       // ensure tooltips are initialized
+       $('.tooltipped').tooltip();
+     });
+
      (function() {
        var user_tz = <%= (user_signed_in? ? current_user.time_zone : request.session[:time_zone]) || 'null' %>,
            real_tz = -(new Date().getTimezoneOffset() * 60);
