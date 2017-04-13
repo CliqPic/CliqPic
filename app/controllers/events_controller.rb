@@ -30,7 +30,7 @@ class EventsController < ApplicationController
     # Process incoming dates and times so that we end up with the right thing
     ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
     
-    @event = current_user.events.new(ep.merge(fetching_images: true))
+    @event = current_user.events.new(ep)
 
     respond_to do |format|
       if @event.save
