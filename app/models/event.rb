@@ -30,6 +30,7 @@ class Event < ApplicationRecord
   end
 
   include AddImageHelper
+  include OwnershipHelper
 
   def fetching_images!
     self.fetching_images = true

@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:show]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :ensure_owner!, only: [:edit, :update, :destroy]
 
   # GET /events
   # GET /events.json
@@ -73,6 +74,10 @@ class EventsController < ApplicationController
   end
 
   private
+    def ensure_owner!
+      render :forbidden unless @event.user_id == current_user.id
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_event
       @event = Event.find(params[:id])

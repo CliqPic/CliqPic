@@ -2,6 +2,7 @@ class AlbumsController < ApplicationController
   before_action :authenticate_user!, except: [:show]
   before_action :set_event, except: [:destroy]
   before_action :set_album, only: [:show, :edit, :update, :destroy]
+  before_action :ensure_owner!, only: [:create, :edit, :update, :destroy]
 
   # GET /albums
   # GET /albums.json
@@ -94,6 +95,10 @@ class AlbumsController < ApplicationController
   end
 
   private
+
+  def ensure_owner!
+    render :forbidden unless @event.user_id == current_user.id
+  end
 
   def set_event
     @event = Event.find(params[:event_id])

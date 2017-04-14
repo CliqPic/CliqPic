@@ -8,60 +8,71 @@
 </header>
 
 <% if user_signed_in? %>
-  <div class='fixed-action-btn'>
-    <a class='btn-floating btn-large blue darken-4'>
-      <i class='material-icons'>menu</i>
-    </a>
+  <% if @event.owned_by? current_user %>
+    <div class='fixed-action-btn'>
+      <a class='btn-floating btn-large blue darken-4'>
+        <i class='material-icons'>menu</i>
+      </a>
 
-    <ul>
-      <li>
-        <%= link_to @event, class: 'btn-floating blue darken-2 white-text tooltipped',
-          'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
-          <i class='material-icons'>arrow_back</i>
-        <% end %>
-      </li>
+      <ul>
+        <li>
+          <%= link_to @event, class: 'btn-floating blue darken-2 white-text tooltipped',
+            'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>arrow_back</i>
+          <% end %>
+        </li>
 
-      <li>
-        <%= link_to '#share-album-modal', class: 'btn-floating blue darken-2 white-text tooltipped',
-          'data-tooltip': 'Download Images', 'data-position': 'left', 'data-delay': '50' do %>
-          <i class='material-icons'>file_download</i>
-        <% end %>
-      </li>
+        <li>
+          <%= link_to '#share-album-modal', class: 'btn-floating blue darken-2 white-text tooltipped',
+            'data-tooltip': 'Download Images', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>file_download</i>
+          <% end %>
+        </li>
 
-      <li>
-        <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
-          'data-tooltip': 'Add/Remove Images', 'data-position': 'left', 'data-delay': '50' do %>
-          <i class='material-icons'>exposure</i>
-        <% end %>
-      </li>
+        <li>
+          <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
+            'data-tooltip': 'Add/Remove Images', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>exposure</i>
+          <% end %>
+        </li>
 
-      <li>
-        <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
-          'data-tooltip': 'Edit Album', 'data-position': 'left', 'data-delay': '50' do %>
-          <i class='material-icons'>mode_edit</i>
-        <% end %>
-      </li>
-    </ul>
-  </div>
+        <li>
+          <%= link_to edit_event_album_path(@event, @album), class: 'btn-floating blue darken-2 white-text tooltipped',
+            'data-tooltip': 'Edit Album', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>mode_edit</i>
+          <% end %>
+        </li>
+      </ul>
+    </div>
 
-  <div class='modal' id='share-album-modal'>
-    <%= form_tag(event_album_path(@event, @album, format: :zip), method: 'get') do %>
-      <div class='modal-content'>
-        <h5>Download Album</h5>
-        <p>
-          <strong>This can take a while.</strong>
-          Enter your email below and we'll email you your images once we've collected them.
-        </p>
-        <div class='field'>
-          <%= label_tag(:email) %>
-          <%= email_field_tag(:email, current_user.email, required: 'required') %>
+    <div class='modal' id='share-album-modal'>
+      <%= form_tag(event_album_path(@event, @album, format: :zip), method: 'get') do %>
+        <div class='modal-content'>
+          <h5>Download Album</h5>
+          <p>
+            <strong>This can take a while.</strong>
+            Enter your email below and we'll email you your images once we've collected them.
+          </p>
+          <div class='field'>
+            <%= label_tag(:email) %>
+            <%= email_field_tag(:email, current_user.email, required: 'required') %>
+          </div>
+
+          <div class='modal-footer'>
+            <a href='#!' class='btn-flat'>Cancel</a>
+            <%= submit_tag('Download', class: 'btn-flat hover-blue hover-darken-4 hover-white-text') %>
+          </div>
         </div>
 
-        <div class='modal-footer'>
-          <a href='#!' class='btn-flat'>Cancel</a>
-          <%= submit_tag('Download', class: 'btn-flat hover-blue hover-darken-4 hover-white-text') %>
+      <% else %>
+
+        <div class='fixed-action-btn'>
+          <%= link_to @event, class: 'btn-floating btn-large blue darken-4 white-text tooltipped',
+            'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
+            <i class='material-icons'>arrow_back</i>
+          <% end %>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 <% end %>
