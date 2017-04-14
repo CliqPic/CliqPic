@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get '/invite/:invite_hash', to: 'invitation#invite', as: 'invite'
+
   resources :events do
     get '/albums', to: redirect('/events/%{event_id}/')
     resources :albums

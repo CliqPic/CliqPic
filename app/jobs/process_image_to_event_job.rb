@@ -53,10 +53,14 @@ class ProcessImageToEventJob < ApplicationJob
   class FanoutEventsJob < ApplicationJob
     queue_as :default
 
-    def perform(image_id)
-      events = Event.select(:id).where(user_id: Image.find(image_id).user_id)
-      events.each do |e|
-        ProcessImageToEventJob.set(wait: 5.seconds).perform_later(image_id, e.id)
+    def perform(image_id, user_id=nil)
+      user_id ||= Image.find(image_id).user_id
+
+      event_ids = Event.where(user_id: user_id).pluck(:id)
+      event_ids += Invitation.where(user_id: user_id).pluck(:event_id)
+
+      event_ids.each do |event_id|
+        ProcessImageToEventJob.set(wait: 5.seconds).perform_later(image_id, event_id)
       end
     end
   end

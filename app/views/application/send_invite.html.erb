@@ -1,0 +1,7 @@
+<p>Hi,</p>
+<p>You've been invited by <%= @user.first_name %> to add your Instagram images to their event!</p>
+<p>
+  Click <%= link_to 'this link', invite_url(@invitation.build_invite_hash) %>
+  or copy the following into your browser's address bar:
+</p>
+<p><%= invite_url(@invitation.build_invite_hash) %></p>

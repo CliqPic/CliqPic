@@ -26,7 +26,7 @@ class ZipImagesJob < ApplicationJob
       raise 'Unable to create zip file' unless File.exists? final_path
     end
 
-    ZippedImageMailer.send_zip(user, album.name, final_path).deliver_now
+    ApplicationMailer.send_zip(user, album.name, final_path).deliver_now
 
     File.delete(final_path)
   end

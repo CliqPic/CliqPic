@@ -2,6 +2,8 @@ class Event < ApplicationRecord
   belongs_to :user
   has_many :albums, dependent: :destroy
   has_many :images
+  has_many :invitations, dependent: :destroy
+  has_many :invitees, through: :invitations
 
   before_destroy :detach_all_images
 

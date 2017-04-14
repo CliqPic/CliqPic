@@ -8,7 +8,9 @@ class User < ApplicationRecord
          :database_authenticatable,
          omniauth_providers: [:instagram]
 
+  has_many :invitations
   has_many :events
+  has_many :invited_events, through: :invitations
   has_many :albums, through: :events
   has_many :images
 
