@@ -63,18 +63,18 @@
             <%= submit_tag('Download', class: 'btn-flat hover-blue hover-darken-4 hover-white-text') %>
           </div>
         </div>
-
-      <% else %>
-
-        <div class='fixed-action-btn'>
-          <%= link_to @event, class: 'btn-floating btn-large blue darken-4 white-text tooltipped',
-            'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
-            <i class='material-icons'>arrow_back</i>
-          <% end %>
-        </div>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+
+  <% else %>
+
+    <div class='fixed-action-btn'>
+      <%= link_to @event, class: 'btn-floating btn-large blue darken-4 white-text tooltipped',
+        'data-tooltip': 'Back to Event', 'data-position': 'left', 'data-delay': '50' do %>
+        <i class='material-icons'>arrow_back</i>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>
 
 <div class='row'>
