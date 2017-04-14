@@ -29,8 +29,10 @@ class ScrapeImagesJob < ApplicationJob
         # TODO: Store hashtags as a text array?
         i.hashtags = image.tags.join(',')
 
-        i.lat = image.location.latitude
-        i.lon = image.location.longitude
+        unless image.location.nil?
+          i.lat = image.location.latitude
+          i.lon = image.location.longitude
+        end
 
         last_image_created = true
       end
