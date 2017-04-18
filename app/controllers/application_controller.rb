@@ -1,7 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
+  before_action :ensure_access_token
+
   around_action :user_time_zone
+
+  def ensure_access_token
+    sign_out current_user if current_user and current_user.access_token.nil?
+  end
 
   def user_time_zone
     zone = if user_signed_in?

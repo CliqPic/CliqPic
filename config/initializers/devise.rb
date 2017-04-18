@@ -252,7 +252,7 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   config.omniauth :instagram, ENV['INSTAGRAM_APP_ID'], ENV['INSTAGRAM_APP_SECRET'],
-                  scope: 'basic'
+                  scope: %w{public_content follower_list}
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

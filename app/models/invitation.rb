@@ -1,8 +1,11 @@
 class Invitation < ApplicationRecord
-  belongs_to :event
-  belongs_to :user, optional: true
+  belongs_to :event, inverse_of: :invitations
+  belongs_to :user, optional: true, inverse_of: :invitations
 
-  after_commit :send_invite_email, on: :create
+  after_commit :send_invite_email, on: :create, unless: 'self.email.blank?'
+
+  # Either a user or an email is required
+  validates_presence_of :user_id, if: 'self.email.blank?'
 
   def self.from_invite_hash(invite_hash)
     dec = Base64.urlsafe_decode64(invite_hash)

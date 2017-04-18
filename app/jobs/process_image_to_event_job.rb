@@ -10,8 +10,10 @@ class ProcessImageToEventJob < ApplicationJob
   after_perform do |job|
     event_id = job.arguments.second
     Event.decrement_counter(:image_process_counter, event_id)
-    event = Event.find event_id
-    event.update(fetching_images: event.image_process_counter != 0)
+    # This is done to prevent concurrency issues.
+    # The event should always correctly update even if another job has changed
+    # the counter before this statement runs.
+    Event.where(id: event_id).update_all('fetching_images = (image_process_counter != 0)')
   end
 
   def perform(image_id, event_id)
@@ -82,7 +84,21 @@ class ProcessImageToEventJob < ApplicationJob
 
       images = Image.select(:id).where(user_id: user_id)
 
-      images.each { |i| ProcessImageToEventJob.set(wait: 5.seconds).perform_later(i.id, event_id) }
+      # Since a given user may have 10's of thousands of images, process images
+      # in batches to reduce total overhead of the worker
+      images.in_batches do |batch|
+        batch.each { |i| ProcessImageToEventJob.set(wait: 5.seconds).perform_later(i.id, event_id) }
+      end
+    end
+  end
+
+  class FanoutInviteesJob < ApplicationJob
+    queue_as :default
+
+    def perform(event_id)
+      invites = Invitation.select(:user_id).where(event_id: event_id)
+
+      invites.each { |i| FanoutImagesJob.perform_later(event_id, i.id) }
     end
   end
 end
