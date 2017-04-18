@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   has_many :albums, dependent: :destroy
   has_many :images
   has_many :invitations, dependent: :destroy
-  has_many :invitees, through: :invitations
+  has_many :invitees, through: :invitations, source: :user
 
   before_destroy :detach_all_images
 

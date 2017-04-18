@@ -16,12 +16,12 @@ class ZipImagesJob < ApplicationJob
 
       # Download all images to the local tmp directory and zip them up, removing
       # the images when we're done.  Long parameters used to ease debugging.
-      `mkdir --parents #{safe_path} &&\
+      `mkdir -p #{safe_path} &&\
        cd #{safe_path} &&\
        curl --silent --remote-name-all #{image_urls.shelljoin} &&\
        cd .. &&\
        zip --quiet --recurse-paths --junk-paths #{final_path.shellescape} #{safe_path} &&\
-       rm --recursive #{safe_path}`
+       rm -r #{safe_path}`
 
       raise 'Unable to create zip file' unless File.exists? final_path
     end

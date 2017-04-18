@@ -78,7 +78,6 @@
            $('#event_hashtags').val(currentTags.join(','));
          }
        }).material_chip({
-         placeholder: 'Enter Hashtags',
          secondaryPlaceholder: '+Hashtag',
          data: [
            <% event.hashtags.to_s.split(',').each do |tag| %>

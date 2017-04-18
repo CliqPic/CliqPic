@@ -1,6 +1,8 @@
 class ProcessImageToEventJob < ApplicationJob
   queue_as :default
 
+  include JobDelayHelper
+
   after_enqueue do |job|
     event_id = job.arguments.second
 
@@ -62,7 +64,7 @@ class ProcessImageToEventJob < ApplicationJob
       event_ids += Invitation.where(user_id: user_id).pluck(:event_id)
 
       event_ids.each do |event_id|
-        ProcessImageToEventJob.set(wait: 5.seconds).perform_later(image_id, event_id)
+        ProcessImageToEventJob.perform_later(image_id, event_id)
       end
     end
   end
@@ -87,7 +89,7 @@ class ProcessImageToEventJob < ApplicationJob
       # Since a given user may have 10's of thousands of images, process images
       # in batches to reduce total overhead of the worker
       images.in_batches do |batch|
-        batch.each { |i| ProcessImageToEventJob.set(wait: 5.seconds).perform_later(i.id, event_id) }
+        batch.each { |i| ProcessImageToEventJob.perform_later(i.id, event_id) }
       end
     end
   end
@@ -98,7 +100,7 @@ class ProcessImageToEventJob < ApplicationJob
     def perform(event_id)
       invites = Invitation.select(:user_id).where(event_id: event_id)
 
-      invites.each { |i| FanoutImagesJob.perform_later(event_id, i.id) }
+      invites.each { |i| FanoutImagesJob.perform_later(event_id, i.user_id) }
     end
   end
 end

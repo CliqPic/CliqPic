@@ -2,6 +2,7 @@ class ProcessFollowedUsersJob < ApplicationJob
   queue_as :default
 
   include InstagramHelper
+  include JobDelayHelper
 
   def perform(user_id)
     user = User.find user_id

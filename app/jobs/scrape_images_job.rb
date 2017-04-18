@@ -5,6 +5,8 @@ class ScrapeImagesJob < ApplicationJob
 
   DEFAULT_COUNT = 20
 
+  include JobDelayHelper
+
   after_enqueue do |job|
     # If this job was successfully queued, queue up a job to also scrape the
     # users this user follows on IG, except when we're already scraping for a
@@ -38,7 +40,7 @@ class ScrapeImagesJob < ApplicationJob
       last_image_created = false
 
       user.images.where(instagram_id: image_data.id).first_or_create do |image|
-        process_ig_to_image(i, image_data)
+        process_ig_to_image(image, image_data)
 
         last_image_created = true
       end
@@ -47,7 +49,7 @@ class ScrapeImagesJob < ApplicationJob
     if ig_images.count == DEFAULT_COUNT and last_image_created
       # If we got a full page and the last image we grabbed was new, queue a job
       # to grab the next page
-      self.class.set(wait: 5.seconds).perform_later(user_id, options.merge(max_id: ig_images.last.id))
+      self.class.perform_later(user_id, options.merge(max_id: ig_images.last.id))
     end
 
   rescue Instagram::BadRequest

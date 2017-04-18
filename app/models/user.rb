@@ -10,7 +10,7 @@ class User < ApplicationRecord
 
   has_many :invitations
   has_many :events
-  has_many :invited_events, through: :invitations
+  has_many :invited_events, through: :invitations, source: :event
   has_many :albums, through: :events
   has_many :images
 

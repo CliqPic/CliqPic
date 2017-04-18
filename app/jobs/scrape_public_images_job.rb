@@ -2,6 +2,7 @@ class ScrapePublicImagesJob < ApplicationJob
   queue_as :default
 
   include InstagramHelper
+  include JobDelayHelper
 
   def perform(event_id, user_id=nil)
     user_id ||= Event.select(:user_id).find(event_id).user_id
