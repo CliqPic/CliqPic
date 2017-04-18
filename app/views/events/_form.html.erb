@@ -54,16 +54,16 @@
          var currentTags = $('#event_hashtags').val().split(','),
              newTag = chip.tag.replace(/,/g, ''); // stip commas
 
-         console.log(currentTags);
+         // Strip leading hashtags for storage
+         if(newTag.startsWith('#')) {
+           newTag = newTag.slice(1);
+         } else {
+           $(this).children('.chip:last').addClass('hashtag');
+         }
 
          // handle no tags at all by properly initializing as an empty array
          if(!currentTags[0]) {
            currentTags = [];
-         }
-
-         // Strip leading hashtags for storage
-         if(newTag.startsWith('#')) {
-           newTag = newTag.slice(1);
          }
 
          currentTags.push(newTag)
@@ -78,12 +78,21 @@
            $('#event_hashtags').val(currentTags.join(','));
          }
        }).material_chip({
+         placeholder: 'Enter Hashtags',
+         secondaryPlaceholder: '+Hashtag',
          data: [
            <% event.hashtags.to_s.split(',').each do |tag| %>
-             { tag : "#<%= tag %>" },
+             { tag : "<%= tag %>" },
            <% end %>
-         ]
+         ],
+         allowSpaces: false,
+         allowCommas: false
        });
+       <% unless event.hashtags.blank? %>
+         // Ensure the "Hashtags" label doesn't show over the input when it has values
+       $('.chips').siblings('label').addClass('active');
+       $('.chip').addClass('hashtag');
+       <% end %>
        Materialize.updateTextFields();
      });
     </script>
