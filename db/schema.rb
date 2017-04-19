@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170414194605) do
+ActiveRecord::Schema.define(version: 20170419163402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,12 @@ ActiveRecord::Schema.define(version: 20170414194605) do
     t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   end
 
+  create_table "users_followers", force: :cascade do |t|
+    t.integer "user_id",     null: false
+    t.integer "follower_id", null: false
+    t.index ["user_id", "follower_id"], name: "index_users_followers_on_user_id_and_follower_id", unique: true, using: :btree
+  end
+
   add_foreign_key "albums", "events"
   add_foreign_key "events", "users"
   add_foreign_key "images", "albums"
@@ -106,4 +112,6 @@ ActiveRecord::Schema.define(version: 20170414194605) do
   add_foreign_key "images", "users"
   add_foreign_key "invitations", "events"
   add_foreign_key "invitations", "users"
+  add_foreign_key "users_followers", "users"
+  add_foreign_key "users_followers", "users", column: "follower_id"
 end

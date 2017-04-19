@@ -2,7 +2,7 @@ class Invitation < ApplicationRecord
   belongs_to :event, inverse_of: :invitations
   belongs_to :user, optional: true, inverse_of: :invitations
 
-  after_commit :send_invite_email, on: :create, unless: 'self.email.blank?'
+  after_commit :send_invite_email, on: :create, unless: 'self.email.blank? or self.user_id'
 
   # Either a user or an email is required
   validates_presence_of :user_id, if: 'self.email.blank?'

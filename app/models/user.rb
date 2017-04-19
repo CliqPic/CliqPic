@@ -14,6 +14,26 @@ class User < ApplicationRecord
   has_many :albums, through: :events
   has_many :images
 
+  # Self referential has_and_belongs_to_many relationships suck
+  # has_and_belongs_to_many :followed_users, class_name: 'User', join_table: :users_followers, inverse_of: :followers
+  # has_and_belongs_to_many :followers, class_name: 'User', join_table: :users_followers, inverse_of: :followed_users
+  
+  has_and_belongs_to_many :followed_users,
+                          class_name: 'User',
+                          join_table: :users_followers,
+                          association_foreign_key: :user_id,
+                          foreign_key: :follower_id,
+                          uniq: true,
+                          inverse_of: :followers
+
+  has_and_belongs_to_many :followers,
+                          class_name: 'User',
+                          join_table: :users_followers,
+                          foreign_key: :user_id,
+                          association_foreign_key: :follower_id,
+                          uniq: true,
+                          inverse_of: :followed_users
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email.to_s
