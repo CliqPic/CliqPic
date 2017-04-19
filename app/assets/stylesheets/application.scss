@@ -76,7 +76,11 @@ nav.main-nav.nav-extended .nav-wrapper {
   min-height: 0;
 }
 
-.nav-extended .logo-wrapper {
+.main-nav .logo-wrapper {
+  height: 100%;
+}
+
+.main-nav.nav-extended .logo-wrapper {
   height: 30px;
   line-height: 2em;
 }
