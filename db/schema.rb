@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419163402) do
+ActiveRecord::Schema.define(version: 20170419225805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20170419163402) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.integer  "user_id",                               null: false
+    t.integer  "owner_id",                              null: false
     t.text     "name",                                  null: false
     t.datetime "start_time"
     t.datetime "end_time"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170419163402) do
     t.datetime "updated_at",                            null: false
     t.boolean  "fetching_images",       default: false
     t.integer  "image_process_counter", default: 0
-    t.index ["user_id"], name: "index_events_on_user_id", using: :btree
+    t.index ["owner_id"], name: "index_events_on_owner_id", using: :btree
   end
 
   create_table "images", force: :cascade do |t|
@@ -68,6 +68,8 @@ ActiveRecord::Schema.define(version: 20170419163402) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_invitations_on_email", using: :btree
+    t.index ["event_id", "email"], name: "index_invitations_on_event_id_and_email", unique: true, where: "(email IS NOT NULL)", using: :btree
+    t.index ["event_id", "user_id"], name: "index_invitations_on_event_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)", using: :btree
     t.index ["event_id"], name: "index_invitations_on_event_id", using: :btree
     t.index ["user_id"], name: "index_invitations_on_user_id", using: :btree
   end
@@ -106,7 +108,7 @@ ActiveRecord::Schema.define(version: 20170419163402) do
   end
 
   add_foreign_key "albums", "events"
-  add_foreign_key "events", "users"
+  add_foreign_key "events", "users", column: "owner_id"
   add_foreign_key "images", "albums"
   add_foreign_key "images", "events"
   add_foreign_key "images", "users"

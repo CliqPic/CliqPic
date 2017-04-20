@@ -17,16 +17,21 @@ class EventsController < ApplicationController
   # GET /events/new
   def new
     @event = Event.new
+    # new events won't have any invitations, obviously
+    @invitations = Invitation.none
   end
 
   # GET /events/1/edit
   def edit
+    @invitations = @event.invitations.where.not(email: nil)
   end
 
   # POST /events
   # POST /events.json
   def create
     ep = event_params
+
+    invites = ep.delete(:invitees)
 
     # Process incoming dates and times so that we end up with the right thing
     ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
@@ -35,6 +40,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
+        @event.process_invitations(invites)
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
@@ -49,11 +55,14 @@ class EventsController < ApplicationController
   def update
     ep = event_params
 
+    invites = ep.delete(:invitees)
+
     # Process incoming dates and times so that we end up with the right thing
     ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
 
     respond_to do |format|
       if @event.update(ep)
+        @event.process_invitations(invites)
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
@@ -75,7 +84,7 @@ class EventsController < ApplicationController
 
   private
     def ensure_owner!
-      render :forbidden unless @event.user_id == current_user.id
+      render :forbidden unless @event.owned_by? current_user
     end
 
     # Use callbacks to share common setup or constraints between actions.
@@ -87,7 +96,7 @@ class EventsController < ApplicationController
     def event_params
       params.
         require(:event).
-        permit(:name, :date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags)
+        permit(:name, :date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags, :invitees)
     end
 
     def process_times(start_date, start_time, end_time)

@@ -1,3 +1,4 @@
+<% invite_emails = @invitations.pluck(:email) %>
 <div class='card'>
   <div class='row card-content'>
     <div class='card-title'><%= title %></div>
@@ -35,9 +36,16 @@
 
       <div class="input-field col s12">
         <%= f.label :hashtags, 'HASHTAGS' %>
-        <div class='chips'>
+        <div class='chips hashtags'>
         </div>
         <%= f.hidden_field :hashtags %>
+      </div>
+
+      <div class="input-field col s12">
+        <%= label_tag 'event[invitees]', 'FRIENDS TO INVITE' %>
+        <div class='chips invitees'>
+        </div>
+        <%= hidden_field_tag 'event[invitees]', invite_emails.join(',') %>
       </div>
 
       <div class="actions col s12">
@@ -50,7 +58,7 @@
      $(function() {
        $('.datepicker').pickadate();
        $('.timepicker').pickatime();
-       $('.chips').on('chip.add', function(e, chip) {
+       $('.chips.hashtags').on('chip.add', function(e, chip) {
          var currentTags = $('#event_hashtags').val().split(','),
              newTag = chip.tag.replace(/,/g, ''); // stip commas
 
@@ -81,7 +89,7 @@
          secondaryPlaceholder: '+Hashtag',
          data: [
            <% event.hashtags.to_s.split(',').each do |tag| %>
-             { tag : "<%= tag %>" },
+             { tag: "<%= tag %>" },
            <% end %>
          ],
          allowSpaces: false,
@@ -89,9 +97,43 @@
        });
        <% unless event.hashtags.blank? %>
          // Ensure the "Hashtags" label doesn't show over the input when it has values
-       $('.chips').siblings('label').addClass('active');
-       $('.chip').addClass('hashtag');
+       $('.chips.hashtags').siblings('label').addClass('active');
+       $('.hashtags .chip').addClass('hashtag');
        <% end %>
+
+       $('.chips.invitees').on('chip.add', function(e, chip) {
+         var currentInvitees = $('#event_invitees').val().split(','),
+             newInvitee = chip.tag;
+
+         if(!currentInvitees[0]) {
+           currentInvitees = []
+         }
+
+         currentInvitees.push(newInvitee);
+         $('#event_invitees').val(currentInvitees.join(','));
+       }).on('chip.delete', function(e, chip) {
+         var currentInvitees = $('#event_invitees').val().split(','),
+             oldInvitee = chip.tag,
+             index = currentInvitees.indexOf(oldInvitee);
+
+         if(index > -1) {
+           currentInvitees.splice(index, 1);
+           $('#event_invitees').val(currentInvitees.join(','));
+         }
+       }).material_chip({
+         secondaryPlaceholder: '+Email',
+         data: [
+           <% invite_emails.each do |email| %>
+           { tag: "<%= email %>" },
+           <% end %>
+         ],
+         allowSpaces: false,
+         allowCommas: false
+       });
+       <% unless invite_emails.empty? %>
+       $('.chips.invitees').siblings('label').addClass('active');
+       <% end %>
+
        Materialize.updateTextFields();
      });
     </script>

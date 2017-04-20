@@ -2,6 +2,8 @@ class Invitation < ApplicationRecord
   belongs_to :event, inverse_of: :invitations
   belongs_to :user, optional: true, inverse_of: :invitations
 
+  after_destroy :detach_user_from_event, unless: 'self.user_id.nil?'
+
   after_commit :send_invite_email, on: :create, unless: 'self.email.blank? or self.user_id'
 
   # Either a user or an email is required
@@ -24,6 +26,10 @@ class Invitation < ApplicationRecord
     invite
   rescue ActiveRecord::RecordNotFound
     raise Revoked
+  end
+
+  def detach_user_from_event
+    DetachUserFromEventJob.perform_later(self.event_id, self.user_id)
   end
 
   def send_invite_email

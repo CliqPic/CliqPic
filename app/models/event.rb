@@ -1,5 +1,5 @@
 class Event < ApplicationRecord
-  belongs_to :user
+  belongs_to :owner, class_name: 'User'
   has_many :albums, dependent: :destroy
   has_many :images
   has_many :invitations, dependent: :destroy
@@ -16,14 +16,32 @@ class Event < ApplicationRecord
   after_save :queue_image_processor, if: 'self.picture_inclusion_data_changed?'
 
   validates_presence_of :hashtags
-  # validate do
-  #   if self.hashtags.blank? and (self.start_time.blank? or self.end_time.blank?) and self.location.blank?
-  #     errors.add(:base, :invalid, message: 'Must supply a date range, location, or hashtags')
-  #   end
-  # end
 
   include AddImageHelper
-  include OwnershipHelper
+  include InvitationHelper
+
+  def owned_by?(user)
+    self.owner_id == user.id
+  end
+
+  def users
+    @_users ||= User.find_by_sql %[ SELECT DISTINCT "users".*
+                                        FROM "users"
+                                        LEFT JOIN "invitations"
+                                            ON "invitations"."event_id" = #{self.id}
+                                        LEFT JOIN "users_followers"
+                                            ON "users_followers"."follower_id" = #{self.owner_id}
+                                            OR "users_followers"."follower_id" = "invitations"."user_id"
+                                        WHERE "users"."id" = #{self.owner_id}
+                                           OR "users"."id" = "invitations"."user_id"
+                                           OR "users"."id" = "users_followers"."user_id"
+                                  ]
+  end
+
+  def reload
+    @_users = nil
+    super
+  end
 
   def picture_inclusion_data_changed?
     self.start_time_changed? or
@@ -50,7 +68,7 @@ class Event < ApplicationRecord
       ProcessImageToEventJob::FanoutImagesJob.perform_later(self.id)
       ProcessImageToEventJob::FanoutInviteesJob.perform_later(self.id)
       ScrapePublicImagesJob.perform_later(self.id)
-      ScrapeImagesJob.perform_later(self.user_id)
+      ScrapeImagesJob.perform_later(self.owner_id)
     end
   end
 end

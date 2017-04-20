@@ -97,7 +97,7 @@ class AlbumsController < ApplicationController
   private
 
   def ensure_owner!
-    render :forbidden unless @event.user_id == current_user.id
+    render :forbidden unless @event.owned_by? current_user
   end
 
   def set_event

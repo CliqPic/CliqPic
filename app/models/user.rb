@@ -8,15 +8,13 @@ class User < ApplicationRecord
          :database_authenticatable,
          omniauth_providers: [:instagram]
 
-  has_many :invitations
-  has_many :events
+  has_many :invitations, dependent: :destroy
+  has_many :events, foreign_key: :owner_id, dependent: :destroy
   has_many :invited_events, through: :invitations, source: :event
   has_many :albums, through: :events
-  has_many :images
+  has_many :images, dependent: :destroy
 
   # Self referential has_and_belongs_to_many relationships suck
-  # has_and_belongs_to_many :followed_users, class_name: 'User', join_table: :users_followers, inverse_of: :followers
-  # has_and_belongs_to_many :followers, class_name: 'User', join_table: :users_followers, inverse_of: :followed_users
   
   has_and_belongs_to_many :followed_users,
                           class_name: 'User',

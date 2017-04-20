@@ -82,7 +82,7 @@ class ProcessImageToEventJob < ApplicationJob
     # when user_id.is_a? Integer
     #   Queue a job for each image owned by the given user
     def perform(event_id, user_id=nil)
-      user_id ||= Event.find(event_id).user_id
+      user_id ||= Event.select(:owner_id).find(event_id).owner_id
 
       images = Image.select(:id).where(user_id: user_id)
 

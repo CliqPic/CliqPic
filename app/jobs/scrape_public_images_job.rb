@@ -5,7 +5,7 @@ class ScrapePublicImagesJob < ApplicationJob
   include JobDelayHelper
 
   def perform(event_id, user_id=nil)
-    user_id ||= Event.select(:user_id).find(event_id).user_id
+    user_id ||= Event.select(:owner_id).find(event_id).owner_id
     user = User.find(user_id)
 
     ig_client = client_for(user)

@@ -18,6 +18,8 @@ class ProcessFollowedUsersJob < ApplicationJob
         u.password = Devise.friendly_token[0,25]
       end
 
+      f_user.followers << user
+
       # Grab all the calling user's events and add the new user to them
       # as an invitee
       user.events.each do |event|
