@@ -2,21 +2,26 @@ class ProcessImageToEventJob < ApplicationJob
   queue_as :default
 
   include JobDelayHelper
+  include EventProcessingHelper
 
-  after_enqueue do |job|
-    event_id = job.arguments.second
-
-    Event.increment_counter(:image_process_counter, event_id) unless job.provider_job_id.nil?
+  def get_event_id(job)
+    job.arguments.second
   end
 
-  after_perform do |job|
-    event_id = job.arguments.second
-    Event.decrement_counter(:image_process_counter, event_id)
-    # This is done to prevent concurrency issues.
-    # The event should always correctly update even if another job has changed
-    # the counter before this statement runs.
-    Event.where(id: event_id).update_all('fetching_images = (image_process_counter != 0)')
-  end
+  # after_enqueue do |job|
+  #   event_id = job.arguments.second
+
+  #   Event.increment_counter(:image_process_counter, event_id) unless job.provider_job_id.nil?
+  # end
+
+  # after_perform do |job|
+  #   event_id = job.arguments.second
+  #   Event.decrement_counter(:image_process_counter, event_id)
+  #   # This is done to prevent concurrency issues.
+  #   # The event should always correctly update even if another job has changed
+  #   # the counter before this statement runs.
+  #   Event.where(id: event_id).update_all('fetching_images = (image_process_counter != 0)')
+  # end
 
   def perform(image_id, event_id)
     image = Image.find image_id
@@ -49,6 +54,9 @@ class ProcessImageToEventJob < ApplicationJob
     end
 
     event.add_image(image)
+  rescue ActiveRecord::RecordNotFound
+    # Looks like we couldn't find a record
+    # This normally happens if an event gets deleted not long after being created
   end
 
   # This allows one job to be quickly queued from the image during creation
@@ -91,6 +99,9 @@ class ProcessImageToEventJob < ApplicationJob
       images.in_batches do |batch|
         batch.each { |i| ProcessImageToEventJob.perform_later(i.id, event_id) }
       end
+    rescue ActiveRecord::RecordNotFound
+      # Looks like we couldn't find a record
+      # This normally happens if an event gets deleted not long after being created
     end
   end
 

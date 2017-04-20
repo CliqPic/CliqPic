@@ -8,15 +8,22 @@ class ScrapeImagesJob < ApplicationJob
   include JobDelayHelper
 
   after_enqueue do |job|
-    # If this job was successfully queued, queue up a job to also scrape the
-    # users this user follows on IG, except when we're already scraping for a
-    # follower
-    unless job.provider_job_id.nil? or
-          (job.arguments.second and job.arguments.second[:images_for])
+    unless job.provider_job_id.nil?
+      # If this job was successfully queued, queue up a job to also scrape the
+      # users this user follows on IG, except when we're already scraping for a
+      # follower
       user_id = job.arguments.first
 
-      ProcessFollowedUsersJob.set(wait: 10.seconds).perform_later(user_id)
+      unless (job.arguments.second and job.arguments.second[:images_for])
+        ProcessFollowedUsersJob.set(wait: 10.seconds).perform_later(user_id)
+      end
+
+      Event.where(owner_id: user_id).update_all('image_process_counter = image_process_counter + 1')
     end
+  end
+
+  after_perform do |job|
+    Event.where(owner_id: job.arguments.first).update_all('image_process_counter = image_process_counter - 1')
   end
 
   def perform(user_id, options={})
@@ -39,7 +46,7 @@ class ScrapeImagesJob < ApplicationJob
 
       last_image_created = false
 
-      user.images.where(instagram_id: image_data.id).first_or_create do |image|
+      user.images.where(instagram_id: image_data.id, thumbnail_url: image_data.images.thumbnail.url).first_or_create do |image|
         process_ig_to_image(image, image_data)
 
         last_image_created = true
@@ -55,6 +62,7 @@ class ScrapeImagesJob < ApplicationJob
   rescue Instagram::BadRequest
     # This usually means super bad shit is happening
     # Like, Instagram is blocking us bad
+    logger.error("Bad Request when pulling images for user #{user_id}")
   rescue Instagram::Error
     # These are usually "try again later" type errors
     # So, we'll just requeue this one to wait a bit before trying again
