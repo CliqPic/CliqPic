@@ -4,6 +4,8 @@ module EventProcessingHelper
   end
 
   def self.included(other)
+    return unless other.is_a? ApplicationJob
+
     other.after_enqueue do |job|
       unless job.provider_job_id.nil?
         event_id = get_event_id(job)
