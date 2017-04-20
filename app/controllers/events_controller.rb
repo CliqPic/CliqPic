@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = current_user.events.order(id: :asc)
+    @events = Event.includes(:images, albums: :images).where(owner_id: current_user.id).order(id: :asc)
   end
 
   # GET /events/1
