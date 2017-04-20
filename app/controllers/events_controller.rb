@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.where(user_id: current_user.id).order(id: :asc)
+    @events = current_user.events.order(id: :asc)
   end
 
   # GET /events/1
