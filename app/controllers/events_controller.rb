@@ -44,6 +44,7 @@ class EventsController < ApplicationController
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
+        @invitations = Invitation.none
         format.html { render :new }
         format.json { render json: @event.errors, status: :unprocessable_entity }
       end
@@ -66,6 +67,7 @@ class EventsController < ApplicationController
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
         format.json { render :show, status: :ok, location: @event }
       else
+        @invitations = @event.invitations.where.not(email: nil)
         format.html { render :edit }
         format.json { render json: @event.errors, status: :unprocessable_entity }
       end
