@@ -40,6 +40,21 @@ class User < ApplicationRecord
     end
   end
 
+  def search_for_events
+    @_all_events ||= Event.find_by_sql %[ SELECT DISTINCT "events".*
+                                              FROM "events"
+                                          LEFT JOIN "users_followers"
+                                              ON "users_followers"."user_id" = #{self.id}
+                                          LEFT JOIN "invitations"
+                                              ON "invitations"."user_id" = #{self.id}
+                                              OR "invitations"."user_id" = "users_followers"."follower_id"
+                                          WHERE "events"."owner_id" = #{self.id}                      -- My events
+                                             OR "events"."owner_id" = "users_followers"."follower_id" -- Followers events
+                                             OR "events"."id" = "invitations"."event_id"              -- Any invited event
+                                                                                                      -- for me or followers
+                                        ]
+  end
+
   def name
     [self.first_name, self.middle_name, self.last_name].join(' ').strip
   end

@@ -8,21 +8,6 @@ class ProcessImageToEventJob < ApplicationJob
     job.arguments.second
   end
 
-  # after_enqueue do |job|
-  #   event_id = job.arguments.second
-
-  #   Event.increment_counter(:image_process_counter, event_id) unless job.provider_job_id.nil?
-  # end
-
-  # after_perform do |job|
-  #   event_id = job.arguments.second
-  #   Event.decrement_counter(:image_process_counter, event_id)
-  #   # This is done to prevent concurrency issues.
-  #   # The event should always correctly update even if another job has changed
-  #   # the counter before this statement runs.
-  #   Event.where(id: event_id).update_all('fetching_images = (image_process_counter != 0)')
-  # end
-
   def perform(image_id, event_id)
     image = Image.find image_id
     event = Event.find event_id
@@ -66,13 +51,17 @@ class ProcessImageToEventJob < ApplicationJob
     queue_as :default
 
     def perform(image_id, user_id=nil)
-      user_id ||= Image.find(image_id).user_id
+      # user_id ||= Image.find(image_id).user_id
+      user = if user_id
+               User.find(user_id)
+             else
+               Image.find(image_id).user
+             end
 
-      event_ids = Event.where(user_id: user_id).pluck(:id)
-      event_ids += Invitation.where(user_id: user_id).pluck(:event_id)
+      events = user.search_for_events
 
-      event_ids.each do |event_id|
-        ProcessImageToEventJob.perform_later(image_id, event_id)
+      events.each do |event|
+        ProcessImageToEventJob.perform_later(image_id, event.id)
       end
     end
   end
@@ -105,13 +94,13 @@ class ProcessImageToEventJob < ApplicationJob
     end
   end
 
-  class FanoutInviteesJob < ApplicationJob
+  class FanoutUsersJob < ApplicationJob
     queue_as :default
 
     def perform(event_id)
-      invites = Invitation.select(:user_id).where(event_id: event_id)
+      event = Event.find(event_id)
 
-      invites.each { |i| FanoutImagesJob.perform_later(event_id, i.user_id) }
+      event.users.each { |user| FanoutImagesJob.perform_later(event_id, user.id) }
     end
   end
 end

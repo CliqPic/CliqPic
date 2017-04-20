@@ -19,5 +19,9 @@ class DetachUserFromEventJob < ApplicationJob
         self.class.perform_later(event_id, followed.id, false)
       end
     end
+
+  rescue ActiveRecord::RecordNotFound
+    # Usually means the event couldn't be found
+    # Regardless, there's generally nothing we can do about this
   end
 end

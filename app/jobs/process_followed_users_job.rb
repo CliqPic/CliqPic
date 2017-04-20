@@ -18,13 +18,13 @@ class ProcessFollowedUsersJob < ApplicationJob
         u.password = Devise.friendly_token[0,25]
       end
 
-      f_user.followers << user
+      f_user.followers << user rescue ActiveRecord::RecordNotUnique
 
       # Grab all the calling user's events and add the new user to them
       # as an invitee
       user.events.each do |event|
         # Create invitations for each event for this user
-        event.invitations.where(user_id: f_user.id).first_or_create
+        event.invitations.where(user_id: f_user.id).first_or_create!
       end
 
       ScrapeImagesJob.set(wait: 5.seconds).perform_later(user_id, images_for: f_user.id)

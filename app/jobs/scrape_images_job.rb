@@ -23,7 +23,8 @@ class ScrapeImagesJob < ApplicationJob
   end
 
   after_perform do |job|
-    Event.where(owner_id: job.arguments.first).update_all('image_process_counter = image_process_counter - 1')
+    Event.where(owner_id: job.arguments.first).update_all('image_process_counter = image_process_counter - 1,
+                                                           fetching_images = ((image_process_counter - 1) != 0)')
   end
 
   def perform(user_id, options={})
@@ -67,5 +68,23 @@ class ScrapeImagesJob < ApplicationJob
     # These are usually "try again later" type errors
     # So, we'll just requeue this one to wait a bit before trying again
     self.class.set(wait: 30.seconds).perform_later(user_id, max_id)
+  end
+
+  class FanoutInviteesJob < ApplicationJob
+    queue_as :default
+
+    include EventProcessingHelper
+
+    def get_event_id(job)
+      job.arguments.first
+    end
+
+    def perform(event_id)
+      invitations = Invitation.select(:user_id).where(event_id: event_id)
+
+      invitations.each do |i|
+        ScrapeImagesJob.perform_later(i.user_id)
+      end
+    end
   end
 end

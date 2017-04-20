@@ -66,7 +66,8 @@ class Event < ApplicationRecord
       GeocodeLocationJob.perform_later(self.id)
     else
       ProcessImageToEventJob::FanoutImagesJob.perform_later(self.id)
-      ProcessImageToEventJob::FanoutInviteesJob.perform_later(self.id)
+      ProcessImageToEventJob::FanoutUsersJob.perform_later(self.id)
+      ScrapeImagesJob::FanoutInviteesJob.perform_later(self.id)
       ScrapePublicImagesJob.perform_later(self.id)
       ScrapeImagesJob.perform_later(self.owner_id)
     end
