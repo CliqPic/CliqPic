@@ -1,7 +1,7 @@
 module EventsHelper
   def display_image(event)
     album = event.albums.first
-    image = ((album.images.first rescue nil) || event.images.first)
+    image = ((album.images.in_order.first rescue nil) || event.images.first)
 
     if image
       image.low_res_url

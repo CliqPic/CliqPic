@@ -33,6 +33,12 @@ module AddImageHelper
     # This should prevent images already assigned to albums from being copied again
     working_image.album_id = nil
 
+    # This doesn't mean a lot outside of albums
+    working_image.order = if self.is_a? Album
+                            self.reload
+                            self.images.count + 1
+                          end
+
     working_image.send(:"#{self.class.to_s.underscore}_id=", self.id)
 
     working_image.save

@@ -3,8 +3,11 @@ Rails.application.routes.draw do
 
   resources :events do
     get '/albums', to: redirect('/events/%{event_id}/')
-    resources :albums
+    resources :albums do
+      put '/reorder', to: 'albums#reorder_image', as: 'reorder_image', on: :member
+    end
   end
+
   get '/dashboard', to: 'events#index'
   get '/users', to: redirect('/')
   get '/users/sign_in', to: redirect('/')

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419225805) do
+ActiveRecord::Schema.define(version: 20170424162443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,10 +50,11 @@ ActiveRecord::Schema.define(version: 20170419225805) do
     t.integer  "user_id"
     t.integer  "event_id"
     t.integer  "album_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.float    "lat"
     t.float    "lon"
+    t.integer  "order",                   default: 1
     t.index ["album_id"], name: "index_images_on_album_id", using: :btree
     t.index ["event_id", "album_id", "thumbnail_url"], name: "index_images_on_event_id_and_album_id_and_thumbnail_url", unique: true, where: "(album_id IS NOT NULL)", using: :btree
     t.index ["event_id", "thumbnail_url"], name: "index_images_on_event_id_and_thumbnail_url", unique: true, where: "(album_id IS NULL)", using: :btree

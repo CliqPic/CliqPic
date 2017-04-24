@@ -1,8 +1,8 @@
 class AlbumsController < ApplicationController
   before_action :authenticate_user!, except: [:show]
-  before_action :set_event, except: [:destroy]
-  before_action :set_album, only: [:show, :edit, :update, :destroy]
-  before_action :ensure_owner!, only: [:create, :edit, :update, :destroy]
+  before_action :set_event
+  before_action :set_album, except: [:index, :new, :create]
+  before_action :ensure_owner!, only: [:create, :edit, :update, :destroy, :reorder_image]
 
   # GET /albums
   # GET /albums.json
@@ -91,6 +91,17 @@ class AlbumsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @event, notice: 'Album was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def reorder_image
+    image = @album.images.find(params[:image_id])
+    image.order = params[:order].to_i
+
+    if image.save
+      render json: { status: 'ok' }
+    else
+      render json: image.errors, status: :unprocessable_entity
     end
   end
 

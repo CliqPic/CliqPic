@@ -77,10 +77,17 @@
   <% end %>
 <% end %>
 
-<div class='row'>
-  <% @album.images.each_with_index do |image, index| %>
-    <div class='col s12 m6 l3'>
-      <section class='image card'>
+<div id="image-list" class='row'>
+  <% @album.images.in_order.each do |image| %>
+    <div class='col s6 m4 l2'>
+      <section class='image card' data-id="<%= image.id %>" data-order="<%= image.order %>">
+        <% if @event.owned_by? current_user %>
+          <i class='material-icons move tooltipped black white-text'
+             data-tooltip='Reorder Image' data-position='top' data-delay='50'
+          >
+            reorder
+          </i>
+        <% end %>
         <div class='card-image'>
           <%= link_to image.high_res_url, target: '_blank' do %>
             <%= tag :img, src: image.thumbnail_url %>
@@ -90,3 +97,45 @@
     </div>
   <% end %>
 </div>
+
+<script>
+ (function() {
+   var canDisplayError = true,
+       displayErrorsAgain = function() {
+         canDisplayError = true
+       },
+       list = document.getElementById('image-list'),
+       sortable = Sortable.create(list, {
+         handle: '.move',
+         draggable: '.col',
+         dataIdAttr: 'data-order',
+         onEnd: function() {
+           console.log('ending');
+           $('.image').each(function(idx) {
+             console.log(this.dataset.order, idx, this.dataset.order == (idx + 1));
+             var oldOrder = parseInt(this.dataset.order, 10),
+                 newOrder = idx + 1;
+
+             if(oldOrder !== newOrder) {
+               this.dataset.order = newOrder;
+
+               $.ajax({
+                 method: 'PUT',
+                 url: "<%= reorder_image_event_album_path(@event, @album) %>",
+                 data: {
+                   order: newOrder,
+                   image_id: this.dataset.id
+                 }
+               }).fail(function(jqXHR) {
+                 if(canDisplayError) {
+                   canDisplayError = false;
+                   Materialize.toast('Unable to reorder images', 2500, 'red accent-4 red-text text-lighten-5')
+                   setTimeout(displayErrorsAgain, 500);
+                 }
+               });
+             }
+           })
+         },
+       });
+ }())
+</script>

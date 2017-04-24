@@ -10,7 +10,7 @@
       <h5 class='card-title'><%= title %></h5>
       <div class="field">
         <%= f.label :name %>
-        <%= f.text_field :name %>
+        <%= f.text_field :name, required: 'required' %>
       </div>
     </div>
     <div class="card-action" style='text-align: right'>
@@ -28,7 +28,7 @@
     # Further, we're trying to ensure the actual records used will correctly
     # Correspond to the album (if they exist on the album)
     %>
-    <% (album.images + @event.images).uniq(&:thumbnail_url).each do |image| %>
+    <% (album.images.in_order + @event.images.order(id: :desc)).uniq(&:thumbnail_url).each do |image| %>
       <% selected = album.images.include?(image) %>
       <div class='col s12 m6 l3 image-select'>
         <label>
