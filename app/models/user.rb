@@ -41,18 +41,25 @@ class User < ApplicationRecord
   end
 
   def search_for_events
-    @_all_events ||= Event.find_by_sql %[ SELECT DISTINCT "events".*
+    @_all_events ||= Event.find_by_sql [%[ SELECT DISTINCT "events".*
                                               FROM "events"
-                                          LEFT JOIN "users_followers"
-                                              ON "users_followers"."user_id" = #{self.id}
-                                          LEFT JOIN "invitations"
-                                              ON "invitations"."user_id" = #{self.id}
-                                              OR "invitations"."user_id" = "users_followers"."follower_id"
-                                          WHERE "events"."owner_id" = #{self.id}                      -- My events
-                                             OR "events"."owner_id" = "users_followers"."follower_id" -- Followers events
-                                             OR "events"."id" = "invitations"."event_id"              -- Any invited event
-                                                                                                      -- for me or followers
-                                        ]
+                                           LEFT JOIN "users_followers"
+                                               ON "users_followers"."user_id" = :id
+                                           LEFT JOIN "invitations"
+                                               ON "invitations"."user_id" = :id
+                                               OR "invitations"."user_id" = "users_followers"."follower_id"
+                                           WHERE "events"."owner_id" = :id                             -- My events
+                                              OR "events"."owner_id" = "users_followers"."follower_id" -- Followers events
+                                              OR "events"."id" = "invitations"."event_id"              -- Any invited event
+                                                                                                       -- for me or followers
+                                         ],
+                                        { id: self.id }
+                                       ]
+  end
+
+  def reload
+    @_all_events = nil
+    super
   end
 
   def name

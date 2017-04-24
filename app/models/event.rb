@@ -25,17 +25,19 @@ class Event < ApplicationRecord
   end
 
   def users
-    @_users ||= User.find_by_sql %[ SELECT DISTINCT "users".*
-                                        FROM "users"
-                                        LEFT JOIN "invitations"
-                                            ON "invitations"."event_id" = #{self.id}
-                                        LEFT JOIN "users_followers"
-                                            ON "users_followers"."follower_id" = #{self.owner_id}
-                                            OR "users_followers"."follower_id" = "invitations"."user_id"
-                                        WHERE "users"."id" = #{self.owner_id}
-                                           OR "users"."id" = "invitations"."user_id"
-                                           OR "users"."id" = "users_followers"."user_id"
-                                  ]
+    @_users ||= User.find_by_sql [%[ SELECT DISTINCT "users".*
+                                         FROM "users"
+                                         LEFT JOIN "invitations"
+                                             ON "invitations"."event_id" = :id
+                                         LEFT JOIN "users_followers"
+                                             ON "users_followers"."follower_id" = :owner_id
+                                             OR "users_followers"."follower_id" = "invitations"."user_id"
+                                         WHERE "users"."id" = :owner_id
+                                            OR "users"."id" = "invitations"."user_id"
+                                            OR "users"."id" = "users_followers"."user_id"
+                                   ],
+                                  { id: self.id, owner_id: self.owner_id }
+                                 ]
   end
 
   def reload
