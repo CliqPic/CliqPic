@@ -28,6 +28,10 @@ git commit -am "Bump version to $2"
 # and tag them
 git tag -a v$2 -m "cliq-pic version $2"
 
+# push everything
+git push origin HEAD
+git push --tags
+
 # log into the container registry
 sudo $(aws ecr get-login)
 
