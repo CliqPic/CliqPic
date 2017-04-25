@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     get '/albums', to: redirect('/events/%{event_id}/')
     resources :albums do
       put '/reorder', to: 'albums#reorder_image', as: 'reorder_image', on: :member
+      put '/recolor', to: 'albums#recolor_image', as: 'recolor_image', on: :member
     end
   end
 

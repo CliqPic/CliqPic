@@ -3,6 +3,7 @@ class InvitationController < ApplicationController
     invitation = Invitation.from_invite_hash(params[:invite_hash])
 
     session[:user_email] = invitation.email
+    session[:invitation_id] = invitation.id
 
     redirect_to user_instagram_omniauth_authorize
   rescue Invitation::Error => error

@@ -1,7 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
   default from: 'no-reply@cliqpic.com'
   layout 'mailer'
-  delivery_method :sendmail
 
   def send_zip(user, album_name, zip_path)
     @user = user

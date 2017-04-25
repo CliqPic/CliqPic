@@ -44,6 +44,12 @@ gem 'sidekiq-unique-jobs', '~> 4.0', '>= 4.0.18'
 # For geocoding and distance calculations
 gem 'geokit', '~> 1.11'
 
+# Image manipulation
+gem 'mini_magick', '~> 4.7.0'
+
+# AWS interaction
+gem 'aws-sdk', '~> 2.9.11'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

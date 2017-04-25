@@ -4,14 +4,14 @@ class AlbumsController < ApplicationController
   before_action :set_album, except: [:index, :new, :create]
   before_action :ensure_owner!, only: [:create, :edit, :update, :destroy, :reorder_image]
 
-  # GET /albums
-  # GET /albums.json
+  # GET /events/1/albums
+  # GET /events/1/albums.json
   def index
     @albums = @event.albums
   end
 
-  # GET /albums/1
-  # GET /albums/1.json
+  # GET /events/1/albums/1
+  # GET /events/1/albums/1.json
   def show
     respond_to do |format|
       format.html { render :show }
@@ -35,17 +35,17 @@ class AlbumsController < ApplicationController
     end
   end
 
-  # GET /albums/new
+  # GET /events/1/albums/new
   def new
     @album = Album.new
   end
 
-  # GET /albums/1/edit
+  # GET /events/1/albums/1/edit
   def edit
   end
 
-  # POST /albums
-  # POST /albums.json
+  # POST /events/1/albums
+  # POST /events/1/albums.json
   def create
     image_ids = params[:album][:image_ids]
 
@@ -65,8 +65,8 @@ class AlbumsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /albums/1
-  # PATCH/PUT /albums/1.json
+  # PATCH/PUT /events/1/albums/1
+  # PATCH/PUT /events/1/albums/1.json
   def update
     image_ids = params[:album][:image_ids]
 
@@ -84,8 +84,8 @@ class AlbumsController < ApplicationController
     end
   end
 
-  # DELETE /albums/1
-  # DELETE /albums/1.json
+  # DELETE /events/1/albums/1
+  # DELETE /events/1/albums/1.json
   def destroy
     @album.destroy
     respond_to do |format|
@@ -94,6 +94,7 @@ class AlbumsController < ApplicationController
     end
   end
 
+  # PUT /events/1/albums/1/reorder
   def reorder_image
     image = @album.images.find(params[:image_id])
     image.order = params[:order].to_i
@@ -103,6 +104,14 @@ class AlbumsController < ApplicationController
     else
       render json: image.errors, status: :unprocessable_entity
     end
+  end
+
+  # PUT /events/1/albums/1/recolor
+  def recolor_image
+    image = @album.images.find(params[:image_id])
+    image.apply_filter(params[:filter])
+
+    redirect_to [@event, @album], notice: 'Image filter applying'
   end
 
   private

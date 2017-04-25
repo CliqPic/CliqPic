@@ -66,6 +66,30 @@
       <% end %>
     </div>
 
+    
+    <div id='edit-image' class='modal'>
+      <%= form_tag(recolor_image_event_album_path(@event, @album), method: 'put') do %>
+        <div class='modal-content'>
+          <h5>Apply Filter to Image</h5>
+          
+          <div class='input-field' style='min-height: 120px'>
+            <select name='filter'>
+              <option value='' disabled selected>Select a filter</option>
+              <option value='grayscale'>Black and White</option>
+              <option value='sepia'>Sepia</option>
+              <option value='revert'>Revert to Original</option>
+            </select>
+          </div>
+          
+          <input type='hidden' id='edit-image-id' name='image_id' />
+        </div>
+        <div class='modal-footer'>
+          <a href='#!' class='btn-flat'>Cancel</a>
+            <%= submit_tag('Apply Filter', class: 'btn-flat hover-blue hover-darken-4 hover-white-text') %>
+        </div>
+      <% end %>
+    </div>
+
   <% else %>
 
     <div class='fixed-action-btn'>
@@ -79,7 +103,7 @@
 
 <div id="image-list" class='row'>
   <% @album.images.in_order.each do |image| %>
-    <div class='col s6 m4 l2'>
+    <div class='col s6 m3 l2'>
       <section class='image card' data-id="<%= image.id %>" data-order="<%= image.order %>">
         <% if @event.owned_by? current_user %>
           <i class='material-icons move tooltipped black white-text'
@@ -87,6 +111,13 @@
           >
             reorder
           </i>
+          <a class='edit tooltipped black white-text' href='#edit-image'
+             data-tooltip='Apply Filter' data-position='top' data-delay='50'
+          >
+            <i class='material-icons'>
+              photo_filter
+            </i>
+          </a>
         <% end %>
         <div class='card-image'>
           <%= link_to image.high_res_url, target: '_blank' do %>
@@ -99,7 +130,7 @@
 </div>
 
 <script>
- (function() {
+ $(function() {
    var canDisplayError = true,
        displayErrorsAgain = function() {
          canDisplayError = true
@@ -137,5 +168,9 @@
            })
          },
        });
- }())
+
+   $('.edit').on('click', function() {
+     $('#edit-image-id').val($(this).parent().data('id'));
+   });
+ })
 </script>

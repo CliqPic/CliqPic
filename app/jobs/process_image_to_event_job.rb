@@ -12,6 +12,9 @@ class ProcessImageToEventJob < ApplicationJob
     image = Image.find image_id
     event = Event.find event_id
 
+    # Only users that should have images attached to this event
+    event.detach_image(image) unless event.users.any? { |u| u.id == image.user_id }
+
     # Check if the image hashtags include all the event hashtags
     unless event.hashtags.blank?
       image_tags = Set.new(image.hashtags.to_s.split(','))
@@ -51,7 +54,6 @@ class ProcessImageToEventJob < ApplicationJob
     queue_as :default
 
     def perform(image_id, user_id=nil)
-      # user_id ||= Image.find(image_id).user_id
       user = if user_id
                User.find(user_id)
              else
