@@ -16,6 +16,17 @@
 }
 
 .image.card {
+  .card-image {
+    position: static;
+  }
+
+  .preloader-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -32px; // half the width of the big spinner
+  }
+
   .move, .edit {
     position: absolute;
     top: 0;

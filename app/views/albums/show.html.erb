@@ -66,12 +66,12 @@
       <% end %>
     </div>
 
-    
+
     <div id='edit-image' class='modal'>
       <%= form_tag(recolor_image_event_album_path(@event, @album), method: 'put') do %>
         <div class='modal-content'>
           <h5>Apply Filter to Image</h5>
-          
+
           <div class='input-field' style='min-height: 120px'>
             <select name='filter'>
               <option value='' disabled selected>Select a filter</option>
@@ -80,7 +80,7 @@
               <option value='revert'>Revert to Original</option>
             </select>
           </div>
-          
+
           <input type='hidden' id='edit-image-id' name='image_id' />
         </div>
         <div class='modal-footer'>
@@ -123,6 +123,19 @@
           <%= link_to image.high_res_url, target: '_blank' do %>
             <%= tag :img, src: image.thumbnail_url %>
           <% end %>
+
+          <div class="preloader-wrapper big hide">
+            <div class="spinner-layer spinner-blue-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
     </div>
@@ -171,6 +184,23 @@
 
    $('.edit').on('click', function() {
      $('#edit-image-id').val($(this).parent().data('id'));
+   });
+
+   $('.image img').on('error', function() {
+     $(this).addClass('hide')
+            .parent()
+            .siblings('.preloader-wrapper')
+            .removeClass('hide').addClass('active');
+
+     this.src = this.src;  // try to reload the image
+   }).on('load',function() {
+     $(this).removeClass('hide')
+            .parent()
+            .siblings('.preloader-wrapper')
+            .removeClass('active').addClass('hide');
+   }).each(function() {
+     var card = $(this).parents('.image');
+     card.css({ 'min-height' : (card.width() - 1) + 'px' });
    });
  })
 </script>
