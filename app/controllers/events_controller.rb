@@ -105,11 +105,12 @@ class EventsController < ApplicationController
       return { start_time: nil, end_time: nil } if start_date.blank?
 
       parsed_date  = Date.parse(start_date).iso8601
-      parsed_start = Time.zone.parse("#{start_time}")
-      parsed_end   = Time.zone.parse("#{end_time}")
 
-      { start_time: (DateTime.parse("#{parsed_date}T#{parsed_start.strftime('%T%:z')}") rescue nil),
-        end_time:   (DateTime.parse("#{parsed_date}T#{parsed_end.strftime('%T%:z')}") rescue nil)
+      parsed_start = Time.zone.parse("#{start_time}").try(:strftime, '%T%:z') || ""
+      parsed_end   = Time.zone.parse("#{end_time}").try(:strftime, '%T%:z') || ""
+
+      { start_time: (DateTime.parse("#{parsed_date}T#{parsed_start}")),
+        end_time:   (DateTime.parse("#{parsed_date}T#{parsed_end}"))
       }
     end
 end

@@ -5,7 +5,7 @@ module InvitationHelper
                invites
              when String
                invites.split(',')
-             end
+             end.uniq
 
     # Ensure all the invites we have are already here
     existing = self.invitations.where(email: emails)

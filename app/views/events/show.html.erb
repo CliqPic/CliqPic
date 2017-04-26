@@ -2,10 +2,10 @@
   <div class='card-content'>
     <div class='right thin'>
       <% if @event.start_time %>
-        <%= @event.start_time.strftime('%D') %><br/>
+        <div><%= @event.start_time.strftime('%D') %></div>
       <% end %>
       <% if @event.images.size > 0 or @event.fetching_images? %>
-        <div><%= pluralize(@event.images.size, 'image').upcase %></div>
+        <div><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@event.images.size, 'image').upcase %></span></div>
       <% end %>
     </div>
     <h5 class='card-title'>

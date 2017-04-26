@@ -21,12 +21,12 @@
 
       <div class="input-field col s6">
         <%= label_tag 'event[start_time]', 'START TIME' %>
-        <%= time_field_tag 'event[start_time]', (@event.start_time and @event.start_time.strftime('%r')), class: 'timepicker' %>
+        <%= time_field_tag 'event[start_time]',(@event.start_time and @event.start_time.strftime('%H:%M')), class: 'timepicker' %>
       </div>
 
       <div class="input-field col s6">
         <%= label_tag 'event[end_time]', 'END TIME' %>
-        <%= time_field_tag 'event[end_time]', (@event.end_time and @event.end_time.strftime('%r')), class: 'timepicker' %>
+        <%= time_field_tag 'event[end_time]', (@event.end_time and @event.end_time.strftime('%H:%M')), class: 'timepicker' %>
       </div>
 
       <div class="input-field col s12">
@@ -59,8 +59,11 @@
        $('.datepicker').pickadate();
        $('.timepicker').pickatime();
        $('.chips.hashtags').on('chip.add', function(e, chip) {
+        // Bugfix where second chip tag replaces placeholder in first
+       setTimeout(function() { $(".chips.hashtags input").attr('placeholder', '+Hashtag') }, 10);
+
          var currentTags = $('#event_hashtags').val().split(','),
-             newTag = chip.tag.replace(/,/g, ''); // stip commas
+             newTag = (!chip ? $(".chips.hashtags input").val() : chip.tag).replace(/,/g, ''); // stip commas
 
          // Strip leading hashtags for storage
          if(newTag.startsWith('#')) {
@@ -77,6 +80,9 @@
          currentTags.push(newTag)
          $('#event_hashtags').val(currentTags.join(','));
        }).on('chip.delete', function(e, chip) {
+        // Bugfix where second chip tag replaces placeholder in first
+        setTimeout(function() { $(".chips.hashtags input").attr('placeholder', '+Hashtag') }, 10);
+
          var currentTags = $('#event_hashtags').val().split(','),
              oldTag = chip.tag.replace('#', ''),
              tagIndex = currentTags.indexOf(oldTag);
@@ -103,7 +109,7 @@
 
        $('.chips.invitees').on('chip.add', function(e, chip) {
          var currentInvitees = $('#event_invitees').val().split(','),
-             newInvitee = chip.tag;
+             newInvitee =  newTag = (!chip ? $(".chips.invitees input").val() : chip.tag);
 
          if(!currentInvitees[0]) {
            currentInvitees = []
@@ -136,6 +142,37 @@
 
        Materialize.updateTextFields();
      });
+
+    var fcn = function() {
+
+      // Make sure that the hashtag and friends to invite labels dont
+      // collapse on top of unfinished tags when you blur from the
+      var blurFcn = function(e) {
+        if($(this).val().length > 0) {
+          e.preventDefault();
+          $(this).parent().siblings('label').addClass('active')
+        }
+
+       }
+       $('.chips.hashtags input').blur(blurFcn);
+       $('.chips.invitees input').blur(blurFcn);
+
+
+       // Make sure you grab any unfinished hashtag or email if they click
+       // update event without hitting enter.
+       $("input[type='submit']").click(function(e) {
+        if($('.chips.hashtags input').val().length > 0) { 
+         $('.chips.hashtags input').trigger("chip.add");
+        }
+
+        if($('.chips.invitees input').val().length > 0) { 
+          console.log("truigger");
+         $('.chips.invitees input').trigger("chip.add");
+        }
+       })
+    };
+    document.addEventListener("turbolinks:load", fcn);
+    document.addEventListener("DOMContentLoaded", fcn);
     </script>
   </div>
 </div>
