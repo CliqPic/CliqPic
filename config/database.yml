@@ -22,8 +22,8 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("RDS_HOSTNAME") { 'localhost' } %>
   port: <%= ENV.fetch("RDS_PORT") { 5432 } %>
-  username: <%= ENV.fetch('RDS_USERNAME') { 'cliq_piq' } %>
-  password: <%= ENV.fetch('RDS_PASSWORD') { 'cliq_piq_developer' } %>
+  username: <%= ENV.fetch('RDS_USERNAME') { nil } %>
+  password: <%= ENV.fetch('RDS_PASSWORD') { nil } %>
 
 development:
   <<: *default

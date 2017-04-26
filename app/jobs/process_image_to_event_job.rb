@@ -22,7 +22,7 @@ class ProcessImageToEventJob < ApplicationJob
 
       # NOTE: We try to detach the image here in case it was attached to this
       # event but should no longer be
-      return event.detach_image(image) unless event_tags.subset? image_tags
+      return event.detach_image(image) unless event_tags.intersect? image_tags
     end
 
     # Check if the image was taken near the location of the event
