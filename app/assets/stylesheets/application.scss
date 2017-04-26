@@ -13,7 +13,6 @@
  *= require_self
  *= require materialize.clockpicker.css
  *= require albums
- * require_tree .
  */
 
 @import "components/color";
@@ -176,4 +175,11 @@ nav.main-nav.nav-extended .nav-wrapper {
 
 .chip.hashtag:before {
   content: '#';
+}
+
+.event.card, .album.card {
+  img {
+    position: absolute;
+    top: auto;
+  }
 }

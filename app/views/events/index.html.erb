@@ -87,4 +87,12 @@
       </div>
     <% end %>
   </section>
+
+  <script>
+   $(function() {
+     $('.event .card-image').each(function() {
+       this.style.height = this.clientWidth + 'px'
+     });
+   });
+  </script>
 <% end %>

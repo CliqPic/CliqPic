@@ -88,4 +88,12 @@
       </div>
     <% end %>
   </section>
+
+  <script>
+   $(function() {
+     $('.album .card-image').each(function() {
+       this.style.height = this.clientWidth + 'px'
+     });
+   });
+  </script>
 <% end %>
