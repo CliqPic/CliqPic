@@ -7,7 +7,7 @@ module InstagramHelper
   def process_ig_to_image(image, ig_data)
     image.instagram_link = ig_data.link
 
-    image.created_on_instagram_at = Time.at(ig_data.created_time.to_i)
+    image.created_on_instagram_at = Time.at(ig_data.created_time.to_i).utc
 
     image.thumbnail_url = ig_data.images.thumbnail.url
     image.low_res_url   = ig_data.images.low_resolution.url
