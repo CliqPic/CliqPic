@@ -5,7 +5,7 @@ class InvitationController < ApplicationController
     session[:user_email] = invitation.email
     session[:invitation_id] = invitation.id
 
-    redirect_to user_instagram_omniauth_authorize
+    redirect_to user_instagram_omniauth_authorize_path
   rescue Invitation::Error => error
     flash[:error] = case error
                     when Invitation::AlreadyRedeemed

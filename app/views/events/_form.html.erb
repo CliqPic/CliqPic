@@ -30,8 +30,8 @@
       </div>
 
       <div class="input-field col s12">
-        <%= f.label :location, 'LOCATION'%>
-        <%= f.text_area :location, class: 'materialize-textarea' %>
+        <%= f.label :location, 'LOCATION', data: { success: "Valid address", error: "Invalid address" }%>
+        <%= f.text_area :location, class: 'materialize-textarea validate' %>
       </div>
 
       <div class="input-field col s12">
@@ -170,6 +170,7 @@
          $('.chips.invitees input').trigger("chip.add");
         }
        })
+
     };
     document.addEventListener("turbolinks:load", fcn);
     document.addEventListener("DOMContentLoaded", fcn);

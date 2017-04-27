@@ -32,18 +32,16 @@ class ProcessImageToEventJob < ApplicationJob
                                                           units: :miles
                                                          )
 
-      puts "Cmparing #{distance_in_miles}" if image.id == 7
-      return event.detach_image(image) if distance_in_miles > 3
+      return event.detach_image(image) if distance_in_miles > 0.5
     end
 
     # Check if the image was taken during the correct time frame for the event
     unless event.start_time.blank? or event.end_time.blank?
-      puts "image has #{image.created_on_instagram_at} and my start time #{event.start_time} and #{event.end_time}" if image.id == 7
        unless image.created_on_instagram_at.between?(event.start_time, event.end_time)
          return event.detach_image(image)
        end
     end
-    puts "Adding image #{image.id}"
+
     event.add_image(image)
   rescue ActiveRecord::RecordNotFound
     # Looks like we couldn't find a record

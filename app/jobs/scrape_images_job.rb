@@ -29,6 +29,14 @@ class ScrapeImagesJob < ApplicationJob
 
   def perform(user_id, options={})
     calling_user = User.find user_id
+
+    unless calling_user.access_token
+      msg = "No access token on #{user_id} when ScrapeImagesJob was called, aborting"
+      puts msg
+      logger.error(msg)
+      return
+    end
+
     ig_client = client_for(calling_user)
 
     user = if options[:images_for]
@@ -41,13 +49,17 @@ class ScrapeImagesJob < ApplicationJob
 
     last_image_created = false
 
+    # Any other unassigned images should get their chance at being attached
+    user.images.where(event_id: nil).map(&:queue_image_processor)
+
     ig_images.each do |image_data|
+      # Add new images, give them a chance to attach.
       # Skip other forms of media
       next if image_data.type != 'image'
 
       last_image_created = false
 
-      user.images.where(instagram_id: image_data.id, thumbnail_url: image_data.images.thumbnail.url).first_or_create do |image|
+      user.images.where(instagram_id: image_data.id, thumbnail_url: image_data.images.thumbnail.url, event_id: nil).first_or_create do |image|
         process_ig_to_image(image, image_data)
 
         last_image_created = true
@@ -63,6 +75,7 @@ class ScrapeImagesJob < ApplicationJob
   rescue Instagram::BadRequest
     # This usually means super bad shit is happening
     # Like, Instagram is blocking us bad
+    puts "Bad Request when pulling images for user #{user_id}"
     logger.error("Bad Request when pulling images for user #{user_id}")
   rescue Instagram::Error
     # These are usually "try again later" type errors
@@ -80,7 +93,7 @@ class ScrapeImagesJob < ApplicationJob
     end
 
     def perform(event_id)
-      invitations = Invitation.select(:user_id).where(event_id: event_id)
+      invitations = Invitation.select(:user_id).where(event_id: event_id).where("user_id is not null")
 
       invitations.each do |i|
         ScrapeImagesJob.perform_later(i.user_id)

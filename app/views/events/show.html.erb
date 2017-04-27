@@ -1,12 +1,21 @@
 <header class='card'>
   <div class='card-content'>
-    <div class='right thin'>
+    <div class="right thin" style="text-align: right; <%="margin-top:-20px" if @event.start_time%>">
       <% if @event.start_time %>
-        <div><%= @event.start_time.strftime('%D') %></div>
+      <div>
+        <p><%= @event.start_time.strftime('%D') %></p>
+      </div>
       <% end %>
-      <% if @event.images.size > 0 or @event.fetching_images? %>
-        <div><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@event.images.size, 'image').upcase %></span></div>
-      <% end %>
+      <div><%=pluralize(@event.scanned_ids.size, 'image')%> scanned</div>
+
+        <% if @event.invitations.size > 0 %>
+          <div>
+            <span><%= "#{@event.invitations.select { |i| i.user_id }.size}/#{@event.invitations.size} invites accepted" %></span>
+          </div>
+        <% end %>
+        
+       
+      <div><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@event.images.size, 'image').upcase %></span></div>
     </div>
     <h5 class='card-title'>
       <%= @event.name %>

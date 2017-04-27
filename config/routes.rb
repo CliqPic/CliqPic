@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get '/dashboard', to: 'events#index'
   get '/users', to: redirect('/')
   get '/users/sign_in', to: redirect('/')
-
+  
   devise_for :users,
              controllers: { omniauth_callbacks: 'users/omniauth_callbacks' },
              skip: [:registration]

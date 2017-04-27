@@ -4,6 +4,8 @@ class Invitation < ApplicationRecord
 
   after_destroy :detach_user_from_event, unless: 'self.user_id.nil?'
 
+  after_save :scrape_images, unless: 'self.user_id.nil?'
+
   after_commit :send_invite_email, on: :create, unless: 'self.email.blank? or self.user_id'
 
   # Either a user or an email is required
@@ -18,7 +20,7 @@ class Invitation < ApplicationRecord
 
     event_id, invite_id, = parts[0,2]
 
-    invite = self.find!(invite_id)
+    invite = find(invite_id)
 
     raise AlreadyRedeemed unless invite.user_id.nil?
     raise InvalidHash if event_id.to_i != invite.event_id
@@ -28,12 +30,17 @@ class Invitation < ApplicationRecord
     raise Revoked
   end
 
+  def scrape_images
+    # If existing user attached to invite, need to scrape
+    ScrapeImagesJob.perform_later(self.user_id)
+  end
+
   def detach_user_from_event
     DetachUserFromEventJob.perform_later(self.event_id, self.user_id)
   end
 
   def send_invite_email
-    ApplicationMailer.send_invite(self).deliver_later
+    ApplicationMailer.send_invite(self).deliver
   end
 
   def build_invite_hash

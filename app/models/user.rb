@@ -14,6 +14,9 @@ class User < ApplicationRecord
   has_many :albums, through: :events
   has_many :images, dependent: :destroy
 
+  # When coming from an invite as a new user, this will trigger an image scrape.
+  after_save :scrape_images, if: proc { self.email and self.access_token_changed? and Invitation.where(email: self.email).first }
+
   # Self referential has_and_belongs_to_many relationships suck
   
   has_and_belongs_to_many :followed_users,
@@ -38,6 +41,11 @@ class User < ApplicationRecord
       user.name  = auth.info.name.to_s
       user.password = Devise.friendly_token[0,25]
     end
+  end
+
+  def scrape_images
+    # If new user made from Invite, need to scrape.
+    ScrapeImagesJob.perform_later(self.id)
   end
 
   def search_for_events

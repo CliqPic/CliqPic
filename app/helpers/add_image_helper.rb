@@ -48,6 +48,10 @@ module AddImageHelper
   end
 
   def detach_image(image)
+    # Keep track of images we've seen so we can display them
+    self.scanned_ids << image.instagram_id unless self.scanned_ids.include?(image.instagram_id)
+    self.save if self.scanned_ids_changed?
+
     # Just in case
     return nil unless image.send(:"#{self.class.to_s.underscore}_id") == self.id
 

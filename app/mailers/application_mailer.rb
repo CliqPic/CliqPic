@@ -13,7 +13,7 @@ class ApplicationMailer < ActionMailer::Base
   def send_invite(invitation)
     @invitation = invitation
     @event = invitation.event
-    @user = @event.user
+    @user = @event.owner
 
     mail(to: invitation.email, subject: "Invite Request - #{@event.name}")
   end
