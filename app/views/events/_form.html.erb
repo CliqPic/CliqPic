@@ -154,8 +154,16 @@
         }
 
        }
+
+      var onClickFcn = function(e) {
+        console.log("worked");
+        $(this).parent().siblings('div.field_with_errors').children('label').addClass('active')
+      }
+
+       $('.chips.hashtags input').focus(onClickFcn);
        $('.chips.hashtags input').blur(blurFcn);
        $('.chips.invitees input').blur(blurFcn);
+       $('.chips.invitees input').focus(onClickFcn);
 
 
        // Make sure you grab any unfinished hashtag or email if they click
