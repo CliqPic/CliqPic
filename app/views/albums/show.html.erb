@@ -120,9 +120,22 @@
           </a>
         <% end %>
         <div class='card-image'>
-          <%= link_to image.high_res_url, target: '_blank' do %>
+
+          <%= link_to "#image-#{image.id}" do %>
             <%= tag :img, src: image.thumbnail_url %>
           <% end %>
+
+          <div id="<%="image-#{image.id}"%>" class="modal modal-fixed-footer">
+            <div class="modal-content">
+              <%= tag :img, src: image.high_res_url %>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+
+              <%= link_to "Full Screen View", image.high_res_url, target: '_blank', class: "modal-action modal-close waves-effect waves-green btn-flat" %>
+            </div>
+          </div>
+
 
           <div class="preloader-wrapper big hide">
             <div class="spinner-layer spinner-blue-only">
