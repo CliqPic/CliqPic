@@ -30,12 +30,15 @@ class ScrapeImagesJob < ApplicationJob
   def perform(user_id, options={})
     calling_user = User.find user_id
 
-    unless calling_user.access_token
+    unless calling_user.access_token or options[:access_token]
       msg = "No access token on #{user_id} when ScrapeImagesJob was called, aborting"
       puts msg
       logger.error(msg)
       return
     end
+
+    # Fighting race conditions
+    calling_user.access_token ||= options[:access_token]
 
     ig_client = client_for(calling_user)
 

@@ -52,7 +52,8 @@ class Event < ApplicationRecord
       self.hashtags_changed? or
       self.location_changed? or
       self.loc_lat_changed? or
-      self.loc_lon_changed?
+      self.loc_lon_changed? or 
+      self.search_public_changed?
   end
 
   def fetching_images!
