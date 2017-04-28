@@ -10,10 +10,9 @@ RUN apk add --no-cache --virtual .build-deps \
         build-base \
         libxslt-dev \
         postgresql-dev \
-        phantomjs \
     && bundle install \
     && apk del .build-deps \
-    && apk add --no-cache curl imagemagick libpq libxslt nodejs postfix zip
+    && apk add --no-cache curl imagemagick libpq libxslt nodejs postfix zip phantomjs
 
 COPY config.ru start.sh Rakefile ./
 COPY bin/ bin/
