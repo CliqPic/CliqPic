@@ -9,7 +9,7 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
-if Rails.env.production?
-  raise "No path found" if Dir.entries("#{Rails.root}/public/assets/").select { |i| i.match("sprockets") }.first.nil?
-  Rails.application.config.assets.manifest = "#{Rails.root}/public/assets/#{Dir.entries("#{Rails.root}/public/assets/").select { |i| i.match("sprockets") }.first}"
-end
+#if Rails.env.production?
+#  raise "No path found" if Dir.entries("#{Rails.root}/public/assets/").select { |i| i.match("sprockets") }.first.nil?
+#  Rails.application.config.assets.manifest = "#{Rails.root}/public/assets/#{Dir.entries("#{Rails.root}/public/assets/").select { |i| i.match("sprockets") }.first}"
+#end
