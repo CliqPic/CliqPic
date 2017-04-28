@@ -15,7 +15,7 @@ RUN apk add --no-cache openssl \
     && tar -xjf /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /tmp \
     && rm -rf /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
     && mv /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
-    && rm -rf /tmp/phantomjs-2.1.1-linux-x86_64
+    && rm -rf /tmp/phantomjs-2.1.1-linux-x86_64 \
     && ln -s /usr/local/bin/phantomjs /root/.phantomjs/2.1.1/x86_64-linux/bin/phantomjs
 
 RUN apk add --no-cache --virtual .build-deps \
