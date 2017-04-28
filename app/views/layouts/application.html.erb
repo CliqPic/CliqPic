@@ -30,6 +30,10 @@
               <ul class='right'>
                 <li><%= link_to 'LOGOUT', destroy_user_session_path, method: :delete %></li>
               </ul>
+            <% else %>
+              <ul class='right'>
+                <li><%= link_to 'LOGIN', new_user_session_path%></li>
+              </ul>
             <% end %>
           </div>
         </div>

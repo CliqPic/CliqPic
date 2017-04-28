@@ -22,7 +22,7 @@ class Event < ApplicationRecord
   include InvitationHelper
 
   def owned_by?(user)
-    self.owner_id == user.id
+    user and self.owner_id == user.id
   end
 
   def users

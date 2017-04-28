@@ -80,7 +80,6 @@
             <% end %>
           </div>
 
-          <% if user_signed_in? %>
             <div class='card-action'>
               <%= link_to([@event, album], class: 'btn-flat tooltipped grey-text text-darken-1',
                           'data-tooltip': 'View Images', 'data-position': 'top', 'data-delay': 50) do %>
@@ -99,7 +98,6 @@
                 <% end %>
               <% end %>
             </div>
-          <% end %>
         </section>
       </div>
     <% end %>
