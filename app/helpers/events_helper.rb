@@ -1,6 +1,6 @@
 module EventsHelper
   def display_image(event)
-    album = aevent.albums.first
+    album = event.albums.first
     image = ((album.images.in_order.first rescue nil) || event.images.first)
 
     if image
