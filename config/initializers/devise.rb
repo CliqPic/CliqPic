@@ -7,7 +7,8 @@ Devise.setup do |config|
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
   # config.secret_key = 'e3409cf28e2baa7da8e405353972cb4beafd7d07081be3ef89140edfbe34494573a3f127dff30d5e92d48ec5b730139ab48b92697e9103712cd4678cb37e2d43'
-
+  config.secret_key = 'f9240db809f53e7edfc60115da5f9ed4e94b78cab63d5d447678ac9dc6c6e5b0a782f5ea02d13858dc4709f06fc5288b4389baf08d0eae13bc7e100aa7ca77b9'
+  
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
@@ -251,8 +252,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
-  config.omniauth :instagram, ENV['INSTAGRAM_APP_ID'], ENV['INSTAGRAM_APP_SECRET'],
-                  scope: %w{public_content follower_list}
+  config.omniauth :instagram, ENV['INSTAGRAM_APP_ID'], ENV['INSTAGRAM_APP_SECRET']
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
