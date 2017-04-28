@@ -1,6 +1,7 @@
 module AddImageHelper
   # FIXME: These can be combined pretty easily, I think.
   def add_images_by_id(image_ids)
+    return unless image_ids
     images = Image.find(image_ids)
 
     images.each { |i| add_image(i) }
@@ -53,6 +54,10 @@ module AddImageHelper
   end
 
   def detach_image(image)
+    # ignore if image has an album, dont detach
+    # just because an event no longer matches it.
+    return if self.is_a?(Event) and image.album
+
     # Keep track of images we've seen so we can display them
     if self.respond_to?(:scanned_images) 
       self.scanned_images << image unless self.scanned_images.include?(image)

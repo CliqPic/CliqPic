@@ -71,7 +71,7 @@ class Event < ApplicationRecord
       ProcessImageToEventJob::FanoutImagesJob.perform_later(self.id)
       ProcessImageToEventJob::FanoutUsersJob.perform_later(self.id)
       ScrapeImagesJob::FanoutInviteesJob.perform_later(self.id)
-      ScrapePublicImagesJob.perform_later(self.id)
+      ScrapePublicImagesJob.perform_later(self.id) if self.search_public
       ScrapeImagesJob.perform_later(self.owner_id)
     end
   end

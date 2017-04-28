@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427193149) do
+ActiveRecord::Schema.define(version: 20170428144217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20170427193149) do
     t.datetime "updated_at",                            null: false
     t.boolean  "fetching_images",       default: false
     t.integer  "image_process_counter", default: 0
+    t.boolean  "search_public",         default: false
     t.index ["owner_id"], name: "index_events_on_owner_id", using: :btree
   end
 

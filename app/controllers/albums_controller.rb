@@ -49,8 +49,6 @@ class AlbumsController < ApplicationController
   def create
     image_ids = params[:album][:image_ids]
 
-    raise 'No Image IDs' if image_ids.nil?
-
     @album = @event.albums.new(album_params)
 
     respond_to do |format|
@@ -69,8 +67,6 @@ class AlbumsController < ApplicationController
   # PATCH/PUT /events/1/albums/1.json
   def update
     image_ids = params[:album][:image_ids]
-
-    raise 'No Image IDs' if image_ids.nil?
 
     respond_to do |format|
       if @album.update(album_params)

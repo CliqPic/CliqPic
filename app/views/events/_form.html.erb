@@ -30,7 +30,7 @@
       </div>
 
       <div class="input-field col s12">
-        <%= f.label :location, 'LOCATION', data: { success: "Valid address", error: "Invalid address" }%>
+        <%= f.label :location, 'LOCATION' %>
         <%= f.text_area :location, class: 'materialize-textarea validate' %>
       </div>
 
@@ -46,6 +46,18 @@
         <div class='chips invitees'>
         </div>
         <%= hidden_field_tag 'event[invitees]', invite_emails.join(',') %>
+      </div>
+
+      <div style="padding-left:10px;padding-bottom:15px">
+        <%= f.label :search_public, 'SEARCH PUBLIC IMAGES (TAKES LONGER)' %>
+        <div class="switch">
+          <label>
+            Off
+            <%= f.check_box :search_public %>
+            <span class="lever"></span>
+            On
+          </label>
+        </div>
       </div>
 
       <div class="actions col s12">

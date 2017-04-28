@@ -98,7 +98,7 @@ class EventsController < ApplicationController
     def event_params
       params.
         require(:event).
-        permit(:name, :date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags, :invitees)
+        permit(:name, :date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags, :invitees, :search_public)
     end
 
     def process_times(start_date, start_time, end_time)
