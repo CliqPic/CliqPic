@@ -20,7 +20,7 @@ then
 fi
 
 # Update the version numbers located in the Dockerfile, compose config, and Beanstalk config
-sed -i '' s/$1/$2/ {Dockerfile,docker-compose.yml,Dockerrun.aws.json} 2>/dev/null
+sed -i '' s/$1/$2/ {Dockerfile,docker-compose.yml,Dockerrun.aws.json}
 
 # Commit those changes
 git commit -am "Bump version to $2"
