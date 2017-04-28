@@ -8,12 +8,14 @@ COPY Gemfile* ./
 
 ENV PHANTOMJS_VERSION 1.9.8
 
-RUN apk update && apk add ca-certificates && update-ca-certificates && apk add openssl && mkdir -p /srv/var && \
-  wget -q -O /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
-  tar -xjf /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -C /tmp && \
-  rm -f /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
-  mv /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/ /srv/var/phantomjs && \
-  ln -s /srv/var/phantomjs/bin/phantomjs /usr/bin/phantomjs
+RUN apk add --no-cache openssl \
+    && wget -O /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 https://github.com/Medium/phantomjs/releases/download/v2.1.1/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
+    && md5sum /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
+        | grep -q "1c947d57fce2f21ce0b43fe2ed7cd361" \
+    && tar -xjf /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /tmp \
+    && rm -rf /tmp/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
+    && mv /tmp/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
+    && rm -rf /tmp/phantomjs-2.1.1-linux-x86_64
 
 RUN apk add --no-cache --virtual .build-deps \
         build-base \

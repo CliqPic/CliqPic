@@ -71,6 +71,7 @@ Rails.application.configure do
     password: ENV["GMAIL_PASSWORD"]
   }
   
+  config.action_mailer.default_url_options = { :host => 'cliq-piq.com' }
 
   # Ignore bad email addresses an
   # Ignore bad email addresses and do not raise email delivery errors.
