@@ -51,8 +51,7 @@ then
     eb deploy Custom-env -l "cliq-pic-$2"
 elif [ -f "$HOME/.local/bin/eb" ]
 then
-    $("$HOME/.local/bin/eb") deploy Custom-env 
-    #-l "cliq-pic-$2"
+    $("$HOME/.local/bin/eb") deploy Custom-env -l "cliq-pic-$2"
 else
     echo -e "Elastic Beanstalk CLI not found.  Please deploy the application manually now."
 fi
