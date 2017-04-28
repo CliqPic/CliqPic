@@ -17,8 +17,8 @@ class ProcessImageToEventJob < ApplicationJob
 
     # Check if the image hashtags include all the event hashtags
     unless event.hashtags.blank?
-      image_tags = Set.new(image.hashtags.to_s.split(','))
-      event_tags = Set.new(event.hashtags.to_s.split(','))
+      image_tags = Set.new(image.hashtags.try(:downcase).to_s.split(','))
+      event_tags = Set.new(event.hashtags.try(:downcase).to_s.split(','))
 
       # NOTE: We try to detach the image here in case it was attached to this
       # event but should no longer be

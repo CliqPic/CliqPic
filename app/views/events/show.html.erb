@@ -6,11 +6,11 @@
         <p><%= @event.start_time.strftime('%D') %></p>
       </div>
       <% end %>
-      <div><%=pluralize(@event.scanned_ids.size, 'image')%> scanned</div>
+      <div><%=pluralize(@event.scanned_images.size, 'image')%> scanned</div>
 
-        <% if @event.invitations.size > 0 %>
+        <% if @event.invitations.where(public: false).size > 0 %>
           <div>
-            <span><%= "#{@event.invitations.select { |i| i.user_id }.size}/#{@event.invitations.size} invites accepted" %></span>
+            <span><%= "#{@event.invitations.where(public: false).select { |i| i.user_id }.size}/#{@event.invitations.where(public: false).size} invites accepted" %></span>
           </div>
         <% end %>
         

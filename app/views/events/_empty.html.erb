@@ -72,8 +72,8 @@
     <h5>WE COULDN'T FIND ANY IMAGES</h5>
     <% if @event.owned_by? current_user %>
       <p>Make sure your event's location, hashtags, and date correspond to the images you want to include in it. If you have friends who have not accepted invites, have them accept them to allow us to search their images.</p>
-      <% if @event.invitations.first %>
-        <p>So far, <%=pluralize(@event.invitees.select { |i| i.images.count > 0 }.size,'invitee')%> have had images successfully pulled.</p>
+      <% if @event.invitations.where(public: false).first %>
+        <p>So far, <%=pluralize(@event.invitations.where(public: false).map(&:user).select { |i| i and i.images.count > 0 }.size,'invitee')%> have had images successfully pulled.</p>
       <% end %>
       <%= link_to 'Edit this Event', edit_event_path(@event), class: 'btn btn-large blue darken-4' %>
     <% end %>

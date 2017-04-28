@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427140940) do
+ActiveRecord::Schema.define(version: 20170427193149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,8 +36,14 @@ ActiveRecord::Schema.define(version: 20170427140940) do
     t.datetime "updated_at",                            null: false
     t.boolean  "fetching_images",       default: false
     t.integer  "image_process_counter", default: 0
-    t.string   "scanned_ids",           default: [],                 array: true
     t.index ["owner_id"], name: "index_events_on_owner_id", using: :btree
+  end
+
+  create_table "events_scanned_images", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "image_id"
+    t.index ["event_id"], name: "index_events_scanned_images_on_event_id", using: :btree
+    t.index ["image_id"], name: "index_events_scanned_images_on_image_id", using: :btree
   end
 
   create_table "images", force: :cascade do |t|
@@ -67,8 +73,9 @@ ActiveRecord::Schema.define(version: 20170427140940) do
     t.integer  "event_id"
     t.integer  "user_id"
     t.text     "email"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.boolean  "public",     default: false
     t.index ["email"], name: "index_invitations_on_email", using: :btree
     t.index ["event_id", "email"], name: "index_invitations_on_event_id_and_email", unique: true, where: "(email IS NOT NULL)", using: :btree
     t.index ["event_id", "user_id"], name: "index_invitations_on_event_id_and_user_id", unique: true, where: "(user_id IS NOT NULL)", using: :btree

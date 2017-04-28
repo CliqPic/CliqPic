@@ -5,6 +5,7 @@ class ProcessFollowedUsersJob < ApplicationJob
   include JobDelayHelper
 
   def perform(user_id)
+    return
     user = User.find user_id
 
     client = client_for(user)

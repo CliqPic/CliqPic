@@ -1,7 +1,7 @@
 <header class='card'>
   <div class='card-content'>
     <h5 class='card-title'>
-      <small class='right thin'><%= pluralize(@album.images.count, 'image').upcase %></small>
+      <small class='right thin'><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@album.images.count, 'image').upcase %></span></small>
       <%= @album.name %>
     </h5>
   </div>

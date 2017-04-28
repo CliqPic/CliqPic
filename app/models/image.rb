@@ -28,9 +28,13 @@ class Image < ApplicationRecord
       self.low_res_url   = original.low_res_url
       self.high_res_url  = original.high_res_url
 
-      # The only reason this would fail is if the album already has the original
-      # version of this image
-      detach_completely! unless self.save
+      if(Image.where(thumbnail_url: self.thumbnail_url, album_id: self.album_id).first)
+        # The only reason this would fail is if the album already has the original
+        # version of this image, so we destroy this guy.
+        destroy
+      else
+        detach_completely! unless self.save
+      end
     else
 
       # Keep a copy of this image attached to the event
