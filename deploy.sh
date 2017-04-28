@@ -33,15 +33,15 @@ git push origin HEAD
 git push --tags
 
 # log into the container registry
-sudo $(aws ecr get-login)
+$(aws ecr get-login)
 
-sudo docker-compose build server
+docker-compose build server
 
 # Tag the new image correctly so we can push it to the registry
-sudo docker tag amdirent/cliq-pic:$2 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
+docker tag amdirent/cliq-pic:$2 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
 
 # Push it to the registry
-sudo docker push 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
+docker push 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
 
 
 
