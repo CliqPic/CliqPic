@@ -48,14 +48,16 @@ docker push 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
 # BELWO DOES NOT WORK.
 # IT DEPLOYS OLD VERSIONS!
 # Finally, deploy to beanstalk
+
+zip -r Dockerrun.zip Dockerrun.aws.json
 if command -v eb > /dev/null 2>&1
 then
     # TODO fix this to dynamically create the tag.
     # Without the tag created it fails. No idea why.
-    eb deploy Custom-env -l 0.0.24
+    #eb deploy Custom-env -l 0.0.24
 elif [ -f "$HOME/.local/bin/eb" ]
 then
-    $("$HOME/.local/bin/eb") deploy Custom-env -l 0.0.24
+   # $("$HOME/.local/bin/eb") deploy Custom-env -l 0.0.24
 else
     echo -e "Elastic Beanstalk CLI not found.  Please deploy the application manually now."
 fi
