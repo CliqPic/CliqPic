@@ -45,6 +45,8 @@ docker push 402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:$2
 
 
 
+# BELWO DOES NOT WORK.
+# IT DEPLOYS OLD VERSIONS!
 # Finally, deploy to beanstalk
 if command -v eb > /dev/null 2>&1
 then

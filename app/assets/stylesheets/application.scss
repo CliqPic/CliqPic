@@ -21,7 +21,7 @@
 
 @import "components/variables";
 
-$roboto-font-path: "/assets/roboto/";
+$roboto-font-path: "/roboto/";
 
 // Generate hover classes
 @each $color_name, $color in $colors {
@@ -58,7 +58,7 @@ $roboto-font-path: "/assets/roboto/";
 @import "materialize";
 
 body {
-  background-image: url('/assets/002-Watercolor-Paper.png');
+  background-image: asset-url('002-Watercolor-Paper.png');
 }
 
 main {
