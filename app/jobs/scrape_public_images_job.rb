@@ -87,9 +87,9 @@ class ScrapePublicImagesJob < ApplicationJob
 
         local_user.images.where(instagram_id: p_image["id"], thumbnail_url: p_image["thumbnail_src"]).first_or_create do |image|
           process_ig_to_image(image, p_image, options[:hashtag])
-          total_new += 1
           last_image_created = true
         end
+        total_new += 1
       end
 
       total_new = (options[:total_new] || 0) + total_new
