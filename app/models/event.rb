@@ -65,6 +65,16 @@ class Event < ApplicationRecord
     redis.decrby("event:#{id}:image_process_counter", 1)
   end
 
+
+  def scanned_images 
+    self.class.redis.get("event:#{self.id}:scanned_images").try(:to_i) || 0
+  end
+
+  def self.incr_scanned_images(id)
+    redis.incrby("event:#{id}:scanned_images", 1)
+  end
+
+
   def clear_lat_lon
     self.loc_lat = nil
     self.loc_lon = nil
