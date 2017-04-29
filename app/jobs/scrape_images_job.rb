@@ -23,7 +23,7 @@ class ScrapeImagesJob < ApplicationJob
   end
 
   after_perform do |job|
-    Event.where(owner_id: job.arguments.first).update_all('image_process_counter = image_process_counter - 1,
+    Event.where(owner_id: job.arguments.first).where("image_process_counter > 0").update_all('image_process_counter = image_process_counter - 1,
                                                            fetching_images = ((image_process_counter - 1) != 0)')
   end
 
