@@ -10,6 +10,7 @@ RUN apk add --no-cache --virtual .build-deps \
         build-base \
         libxslt-dev \
         postgresql-dev \
+        git \
     && bundle install \
     && apk del .build-deps \
     && apk add --no-cache curl imagemagick libpq libxslt nodejs postfix zip
