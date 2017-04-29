@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170429164659) do
+ActiveRecord::Schema.define(version: 20170429175905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,20 +24,18 @@ ActiveRecord::Schema.define(version: 20170429164659) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.integer  "owner_id",                              null: false
-    t.text     "name",                                  null: false
+    t.integer  "owner_id",                       null: false
+    t.text     "name",                           null: false
     t.datetime "start_time"
     t.datetime "end_time"
     t.text     "location"
     t.float    "loc_lat"
     t.float    "loc_lon"
     t.text     "hashtags"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.boolean  "fetching_images",       default: false
-    t.integer  "image_process_counter", default: 0
-    t.boolean  "search_public",         default: false
-    t.integer  "scanned_images",        default: 0
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.boolean  "search_public",  default: false
+    t.integer  "scanned_images", default: 0
     t.index ["owner_id"], name: "index_events_on_owner_id", using: :btree
   end
 

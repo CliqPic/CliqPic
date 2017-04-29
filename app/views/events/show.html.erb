@@ -11,7 +11,7 @@
         <p><%= @event.start_time.strftime('%D') %></p>
       </div>
       <% end %>
-      <div><%=pluralize(@event.scanned_images, 'image')%> scanned <%= @event.fetching_images ? 'so far' : ''%></div>
+      <div><%=pluralize(@event.scanned_images, 'image')%> scanned <%= @event.image_process_counter > 0 ? 'so far' : ''%></div>
 
         <% if @event.invitations.where(public: false).size > 0 %>
           <div>
@@ -110,9 +110,10 @@
      });
    });
   </script>
-  <% if @event.fetching_images %>
+  <% if @event.image_process_counter > 0 %>
     <script>
      (function() {
+      console.log("Again.");
        var refresher = refresher;
        // set page to automatically refresh while we're searching for images.
        $(document).on('turbolinks:load', function() {

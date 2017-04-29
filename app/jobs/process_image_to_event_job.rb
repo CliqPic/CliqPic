@@ -10,8 +10,8 @@ class ProcessImageToEventJob < ApplicationJob
 
   def perform(image_id, event_id)
     image = Image.find image_id
-    event = Event.find event_id
-    t = Time.now
+    event = Event.where(id: event_id).first
+    return if not event
 
     # Only users that should have images attached to this event
     event.detach_image(image) unless event.users.any? { |u| u.id == image.user_id }
@@ -102,7 +102,8 @@ class ProcessImageToEventJob < ApplicationJob
     queue_as :processor
 
     def perform(event_id)
-      event = Event.find(event_id)
+      event = Event.where(id: event_id).first
+      return if not event
 
       event.users.each { |user| FanoutImagesJob.perform_later(event_id, user.id) }
     end

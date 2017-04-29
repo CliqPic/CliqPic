@@ -7,8 +7,6 @@ class Event < ApplicationRecord
 
   before_destroy :detach_all_images
 
-  before_create :fetching_images!
-  before_save :fetching_images!, if: 'self.picture_inclusion_data_changed?'
   before_save :clear_lat_lon,    if: 'self.location_changed? and self.location.blank?'
 
   after_commit :queue_image_processor, on: :create
@@ -55,13 +53,25 @@ class Event < ApplicationRecord
       self.search_public_changed?
   end
 
-  def fetching_images!
-    self.fetching_images = true
+  def image_process_counter 
+    self.class.redis.get("event:#{self.id}:image_process_counter").try(:to_i) || 0
+  end
+
+  def self.incr_image_process_counter(id)
+    redis.incrby("event:#{id}:image_process_counter", 1)
+  end
+
+  def self.decr_image_process_counter(id)
+    redis.decrby("event:#{id}:image_process_counter", 1)
   end
 
   def clear_lat_lon
     self.loc_lat = nil
     self.loc_lon = nil
+  end
+
+  def self.redis
+    Sidekiq.redis { |c| c }
   end
 
   def queue_image_processor

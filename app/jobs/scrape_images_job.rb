@@ -18,13 +18,12 @@ class ScrapeImagesJob < ApplicationJob
         ProcessFollowedUsersJob.set(wait: 10.seconds).perform_later(user_id)
       end
 
-      Event.where(owner_id: user_id).update_all('image_process_counter = image_process_counter + 1')
+      Event.where(owner_id: user_id).pluck(:id).map { |id| Event.incr_image_process_counter(id) }
     end
   end
 
   after_perform do |job|
-    Event.where(owner_id: job.arguments.first).where("image_process_counter > 0").update_all('image_process_counter = image_process_counter - 1,
-                                                           fetching_images = ((image_process_counter - 1) != 0)')
+    Event.where(owner_id: job.arguments.first).pluck(:id).map { |id| Event.decr_image_process_counter(id) }
   end
 
   def perform(user_id, options={})

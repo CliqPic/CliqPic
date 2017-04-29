@@ -6,7 +6,7 @@ module EventsHelper
     if image
       image.low_res_url
     else
-      "http://placehold.it/700?text=#{ event.fetching_images ? 'Looking+for+Images' : 'No+Images+Found'}"
+      "http://placehold.it/700?text=#{ event.image_process_counter > 0 ? 'Looking+for+Images' : 'No+Images+Found'}"
     end
   end  
 

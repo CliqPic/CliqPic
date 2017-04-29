@@ -30,12 +30,11 @@ class ScrapePublicImagesJob < ApplicationJob
     end
 
     after_enqueue do |job|
-      Event.where(id: job.arguments.first).update_all('image_process_counter = image_process_counter + 1')
+      Event.incr_image_process_counter(job.arguments.first)
     end
 
     after_perform do |job|
-      Event.where(id: job.arguments.first).where("image_process_counter > 0").update_all('image_process_counter = image_process_counter - 1,
-                                                             fetching_images = ((image_process_counter - 1) != 0)')
+      Event.decr_image_process_counter(job.arguments.first)
     end
 
     def perform(event_id, user_id, options={})
