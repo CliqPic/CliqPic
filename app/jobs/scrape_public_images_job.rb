@@ -9,8 +9,7 @@ class ScrapePublicImagesJob < ApplicationJob
 
   def perform(event_id, user_id=nil)
     event = Event.select(:id, :owner_id, :hashtags).find(event_id)
-    Event.where(id: event_id).update_all("image_process_counter = image_process_counter + #{event.hashtags.blank? ? 0 : event.hashtags.split(',').count}")
-
+    
     event.hashtags.split(',').each do |tag|
       SearchHashtagsJob.perform_later(event_id, (user_id || event.owner_id), hashtag: tag)
     end
@@ -28,6 +27,10 @@ class ScrapePublicImagesJob < ApplicationJob
 
     def self.get_event_id(job)
       job.arguments.first
+    end
+
+    after_enqueue do |job|
+      Event.where(id: job.arguments.first).update_all('image_process_counter = image_process_counter + 1')
     end
 
     after_perform do |job|
@@ -51,35 +54,52 @@ class ScrapePublicImagesJob < ApplicationJob
 
       # Get public media
 
-      possible_images = InstaScrape.hashtag(options[:hashtag], include_meta_data: true)
+      puts "Searching for #{options[:hashtag]} with #{options[:max_id]} as last id and total new is #{options[:total_new]}"
+      possible_images = RubyInstagramScraper.get_tag_media_nodes(options[:hashtag], options[:max_id])
 
       last_image_created = false
       # Keep track of users to keep DB requests down
       image_users = {}
 
-      possible_images.each do |p_image|
+      total_new = 0
+
+      possible_images["nodes"].each do |p_image|
+        next if p_image["is_video"]
+
         last_image_created = false
 
-        # Scraper cant get user ids. So we just make a user out of the hashtag.
-        # this way we can use the invitation system. It's hacky, but it's also
-        # an MVP.
-        ig_user_id = options[:hashtag]
+        ig_user = p_image["owner"]
 
-        image_users[ig_user_id] ||= User.where(uid: ig_user_id).first
-        unless image_users[ig_user_id]
-          image_users[ig_user_id] = User.new(provider: 'instagram', uid: ig_user_id)
-          image_users[ig_user_id].password = "123456"
-          image_users[ig_user_id].save
+        image_users[ig_user["id"]] ||= User.where(uid: ig_user["id"]).first
+        unless image_users[ig_user["id"]]
+          image_users[ig_user["id"]] = User.new(provider: 'instagram', uid: ig_user["id"])
+          image_users[ig_user["id"]].password = "123456"
+          image_users[ig_user["id"]].save
         end
 
-        local_user = image_users[ig_user_id]
+        local_user = image_users[ig_user["id"]]
 
-        event.invitations.where(user_id: local_user.id, public: true).first_or_create
+        # Fighting race conditions
+        begin
+          event.invitations.where(user_id: local_user.id, public: true).first_or_create
+        rescue ActiveRecord::RecordNotUnique
+        end
 
-        local_user.images.where(instagram_id: p_image.link.match(/p\/([A-Za-z_\-\d]+)\/\?/)[1], thumbnail_url: p_image.link).first_or_create do |image|
-          process_ig_to_image(image, p_image)
+        local_user.images.where(instagram_id: p_image["id"], thumbnail_url: p_image["thumbnail_src"]).first_or_create do |image|
+          process_ig_to_image(image, p_image, options[:hashtag])
+          total_new += 1
           last_image_created = true
         end
+      end
+
+      total_new = (options[:total_new] || 0) + total_new
+
+      puts "Possible images is #{possible_images["page_info"]["has_next_page"]} and #{total_new}"
+      if total_new < 1000 and possible_images["page_info"]["has_next_page"]
+        puts "performing a new guy"
+        # If we got a full page and the last image we grabbed was new, queue a job
+        # to grab the next page
+        self.class.perform_later(event_id, user_id, options.merge(max_id: possible_images["page_info"]["end_cursor"], total_new: total_new))
       end
 
     rescue Instagram::BadRequest

@@ -17,7 +17,7 @@ gem 'uglifier', '>= 1.3.0'
 
 gem 'insta_scrape'
 
-gem 'ruby-instagram-scraper'
+gem 'ruby-instagram-scraper', github: "amdirent/ruby-instagram-scraper"
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer'
 
