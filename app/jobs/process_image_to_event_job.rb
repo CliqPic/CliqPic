@@ -1,5 +1,5 @@
 class ProcessImageToEventJob < ApplicationJob
-  queue_as :default
+  queue_as :processor
 
   include JobDelayHelper
   include EventProcessingHelper
@@ -11,6 +11,7 @@ class ProcessImageToEventJob < ApplicationJob
   def perform(image_id, event_id)
     image = Image.find image_id
     event = Event.find event_id
+    t = Time.now
 
     # Only users that should have images attached to this event
     event.detach_image(image) unless event.users.any? { |u| u.id == image.user_id }
@@ -52,7 +53,7 @@ class ProcessImageToEventJob < ApplicationJob
   # that will fan out to all a user's events without having to take the time
   # to iterate over all of them while it's being created
   class FanoutEventsJob < ApplicationJob
-    queue_as :default
+    queue_as :processor
 
     def perform(image_id, user_id=nil)
       user = if user_id
@@ -73,7 +74,7 @@ class ProcessImageToEventJob < ApplicationJob
   # will fan out all of the given - or the event's - user's images and check if
   # They should be assigned to this event or not.
   class FanoutImagesJob < ApplicationJob
-    queue_as :default
+    queue_as :processor
 
     # Queue a ProcessImageToEventJob for each image found
     # Has two modes of operation based on inputs:
@@ -98,7 +99,7 @@ class ProcessImageToEventJob < ApplicationJob
   end
 
   class FanoutUsersJob < ApplicationJob
-    queue_as :default
+    queue_as :processor
 
     def perform(event_id)
       event = Event.find(event_id)

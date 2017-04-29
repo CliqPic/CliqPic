@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "server",
-      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.46",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.47",
       "memoryReservation": "128",
       "portMappings": [
         {
@@ -13,10 +13,22 @@
       ]
     },
     {
-      "name": "sidekiq",
-      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.46",
-      "memoryReservation": "768",
-      "command": ["bundle", "exec", "sidekiq"]
+      "name": "sidekiq-scraper",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.47",
+      "memoryReservation": "256",
+      "command": ["bundle", "exec", "sidekiq", "-q", "scraper", "-c", "5" ]
+    },
+    {
+      "name": "sidekiq-processor",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.47",
+      "memoryReservation": "256",
+      "command": ["bundle", "exec", "sidekiq", "-q", "processor", "-c", "10"]
+    },
+    {
+      "name": "sidekiq-filter",
+      "image": "402239435993.dkr.ecr.us-east-1.amazonaws.com/clients/cliq-pic:0.0.47",
+      "memoryReservation": "128",
+      "command": ["bundle", "exec", "sidekiq", "-q", "filter", "-c", "5"]
     }
   ]
 }

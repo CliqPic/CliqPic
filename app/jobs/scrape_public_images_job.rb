@@ -1,5 +1,5 @@
 class ScrapePublicImagesJob < ApplicationJob
-  queue_as :default
+  queue_as :scraper
 
   include EventProcessingHelper
 
@@ -16,7 +16,7 @@ class ScrapePublicImagesJob < ApplicationJob
   end
 
   class SearchHashtagsJob < ApplicationJob
-    queue_as :default
+    queue_as :scraper
 
     include InstagramHelper
     include JobDelayHelper
@@ -49,8 +49,6 @@ class ScrapePublicImagesJob < ApplicationJob
         logger.error(msg)
         return
       end
-
-      ig_client = client_for(user)
 
       # Get public media
 
@@ -95,7 +93,7 @@ class ScrapePublicImagesJob < ApplicationJob
       total_new = (options[:total_new] || 0) + total_new
 
       puts "Possible images is #{possible_images["page_info"]["has_next_page"]} and #{total_new}"
-      if total_new < 1000 and possible_images["page_info"]["has_next_page"]
+      if total_new < 500 and possible_images["page_info"]["has_next_page"]
         puts "performing a new guy"
         # If we got a full page and the last image we grabbed was new, queue a job
         # to grab the next page

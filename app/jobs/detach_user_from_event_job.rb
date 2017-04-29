@@ -1,5 +1,5 @@
 class DetachUserFromEventJob < ApplicationJob
-  queue_as :default
+  queue_as :processor
 
   def perform(event_id, user_id, process_followers=true)
     event = Event.find event_id

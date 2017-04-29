@@ -1,5 +1,5 @@
 class ApplyFilterJob < ApplicationJob
-  queue_as :default
+  queue_as :filter
 
   def perform(image_id, options={})
     image_data = Image.find image_id

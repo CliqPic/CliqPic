@@ -1,5 +1,5 @@
 class GeocodeLocationJob < ApplicationJob
-  queue_as :default
+  queue_as :processor
 
   def perform(event_id)
     event = Event.find event_id

@@ -2,7 +2,6 @@ class Event < ApplicationRecord
   belongs_to :owner, class_name: 'User'
   has_many :albums, dependent: :destroy
   has_many :images
-  has_and_belongs_to_many :scanned_images, join_table: "events_scanned_images", class_name: "Image"
   has_many :invitations, dependent: :destroy
   has_many :invitees, through: :invitations, source: :user
 

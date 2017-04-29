@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170428144217) do
+ActiveRecord::Schema.define(version: 20170429164659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,14 +37,8 @@ ActiveRecord::Schema.define(version: 20170428144217) do
     t.boolean  "fetching_images",       default: false
     t.integer  "image_process_counter", default: 0
     t.boolean  "search_public",         default: false
+    t.integer  "scanned_images",        default: 0
     t.index ["owner_id"], name: "index_events_on_owner_id", using: :btree
-  end
-
-  create_table "events_scanned_images", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "image_id"
-    t.index ["event_id"], name: "index_events_scanned_images_on_event_id", using: :btree
-    t.index ["image_id"], name: "index_events_scanned_images_on_image_id", using: :btree
   end
 
   create_table "images", force: :cascade do |t|

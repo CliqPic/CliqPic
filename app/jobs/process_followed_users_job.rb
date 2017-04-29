@@ -1,5 +1,5 @@
 class ProcessFollowedUsersJob < ApplicationJob
-  queue_as :default
+  queue_as :scraper
 
   include InstagramHelper
   include JobDelayHelper

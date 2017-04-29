@@ -21,8 +21,7 @@ module AddImageHelper
 
   def add_image(image)
     if self.respond_to?(:scanned_images)
-      self.scanned_images << image unless self.scanned_images.include?(image)
-      self.save
+      Event.where(id: self.id).update_all("scanned_images = scanned_images + 1")
     end
 
     image_ownership_id = image.send(:"#{self.class.to_s.underscore}_id")
@@ -60,8 +59,7 @@ module AddImageHelper
 
     # Keep track of images we've seen so we can display them
     if self.respond_to?(:scanned_images) 
-      self.scanned_images << image unless self.scanned_images.include?(image)
-      self.save
+      Event.where(id: self.id).update_all("scanned_images = scanned_images + 1")
     end
 
     # Just in case

@@ -1,5 +1,5 @@
 class ScrapeImagesJob < ApplicationJob
-  queue_as :default
+  queue_as :scraper
 
   include InstagramHelper
 
@@ -87,7 +87,7 @@ class ScrapeImagesJob < ApplicationJob
   end
 
   class FanoutInviteesJob < ApplicationJob
-    queue_as :default
+    queue_as :scraper
 
     include EventProcessingHelper
 

@@ -1,5 +1,5 @@
 class ZipImagesJob < ApplicationJob
-  queue_as :default
+  queue_as :filter
 
   def perform(album_id, user_id, *args)
     user  = User.find(user_id)
