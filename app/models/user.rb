@@ -46,7 +46,7 @@ class User < ApplicationRecord
   def scrape_images
     # If new user made from Invite, need to scrape.
     # Race conditions happen here so we pass tokendirectly.
-    ScrapeImagesJob.perform_later(self.id, access_token: self.access_token)
+    ScrapeImagesJob.perform_later(self.id, access_token: self.access_token) if self.access_token
   end
 
   def search_for_events
