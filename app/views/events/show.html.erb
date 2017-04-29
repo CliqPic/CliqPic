@@ -61,7 +61,7 @@
   </div>
 <% end %>
 
-<% if @event.albums.size < 1 && @event.images.size == 0 %>
+<% if @event.albums.size < 1 %>
   <%= render 'empty' %>
 <% else %>
   <section class='row'>

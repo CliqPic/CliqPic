@@ -1,5 +1,5 @@
 <section style='text-align: center; padding: 24px;'>
-  <% if @event.images.size > 0 && !@event.fetching_images? %>
+  <% if @event.images.size > 0 %>
     <% if @event.owned_by? current_user %>
       <h5>YOU HAVEN'T MADE ANY ALBUMS YET</h5>
       <%= link_to 'Create An Album Now!', new_event_album_path(@event), class: 'btn btn-large blue darken-4' %>
