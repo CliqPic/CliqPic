@@ -1,4 +1,5 @@
 class Event < ApplicationRecord
+  include PreparedStatements
   belongs_to :owner, class_name: 'User'
   has_many :albums, dependent: :destroy
   has_many :images
@@ -22,8 +23,11 @@ class Event < ApplicationRecord
     user and self.owner_id == user.id
   end
 
-  def users
-    @_users ||= User.find_by_sql [%[ SELECT DISTINCT "users".*
+  def user_ids
+    @_users ||= invitees.pluck(:id) + [owner_id]
+=begin
+if you ever bring followers back, you'll need this.
+    User.find_by_sql [%[ SELECT DISTINCT "users".*
                                          FROM "users"
                                          LEFT JOIN "invitations"
                                              ON "invitations"."event_id" = :id
@@ -36,6 +40,7 @@ class Event < ApplicationRecord
                                    ],
                                   { id: self.id, owner_id: self.owner_id }
                                  ]
+=end
   end
 
   def reload

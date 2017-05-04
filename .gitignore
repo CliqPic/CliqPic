@@ -9,6 +9,7 @@
 .env
 .DS_Store
 dump.rdb
+Dockerrun.zip
 
 # Ignore all logfiles and tempfiles.
 /log/*

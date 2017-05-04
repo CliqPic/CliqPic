@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include PreparedStatements
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :registerable, :rememberable, :trackable,
@@ -50,20 +52,7 @@ class User < ApplicationRecord
   end
 
   def search_for_events
-    @_all_events ||= Event.find_by_sql [%[ SELECT DISTINCT "events".*
-                                              FROM "events"
-                                           LEFT JOIN "users_followers"
-                                               ON "users_followers"."user_id" = :id
-                                           LEFT JOIN "invitations"
-                                               ON "invitations"."user_id" = :id
-                                               OR "invitations"."user_id" = "users_followers"."follower_id"
-                                           WHERE "events"."owner_id" = :id                             -- My events
-                                              OR "events"."owner_id" = "users_followers"."follower_id" -- Followers events
-                                              OR "events"."id" = "invitations"."event_id"              -- Any invited event
-                                                                                                       -- for me or followers
-                                         ],
-                                        { id: self.id }
-                                       ]
+    @_all_events ||= prep_con.exec_prepared("events_lookup", [{value: self.id}]).map { |r| r["id"] }
   end
 
   def reload

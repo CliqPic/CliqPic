@@ -14,7 +14,7 @@ class ProcessImageToEventJob < ApplicationJob
     return if not event
 
     # Only users that should have images attached to this event
-    event.detach_image(image) unless event.users.any? { |u| u.id == image.user_id }
+    event.detach_image(image) unless event.user_ids.any? { |id| id == image.user_id }
 
     # Check if the image hashtags include all the event hashtags
     unless event.hashtags.blank?
@@ -62,10 +62,10 @@ class ProcessImageToEventJob < ApplicationJob
                Image.find(image_id).user
              end
 
-      events = user.search_for_events
+      event_ids = user.search_for_events
 
-      events.each do |event|
-        ProcessImageToEventJob.perform_later(image_id, event.id)
+      event_ids.each do |event_id|
+        ProcessImageToEventJob.perform_later(image_id, event_id)
       end
     end
   end
@@ -105,7 +105,7 @@ class ProcessImageToEventJob < ApplicationJob
       event = Event.where(id: event_id).first
       return if not event
 
-      event.users.each { |user| FanoutImagesJob.perform_later(event_id, user.id) }
+      event.user_ids.each { |user_id| FanoutImagesJob.perform_later(event_id, user_id) }
     end
   end
 end

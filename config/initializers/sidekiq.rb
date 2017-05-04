@@ -1,5 +1,5 @@
 Rails.application.config.active_job.queue_adapter = :sidekiq
-
+ActiveRecord::Base.logger = Logger.new(STDOUT)  
 Sidekiq.configure_server do |config|
   config.redis = { driver: 'hiredis' }
 

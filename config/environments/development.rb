@@ -1,6 +1,15 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+#  THIS IS THE CODE FOR TRACKING DOWN BAD AR QUERIES.
+
+  ActiveSupport::Notifications.subscribe("sql.active_record") do |_, _, _, _, details|
+    if details[:sql] =~ /LEFT JOIN "users_followers"/
+      puts caller.select { |l| l.match(/webapps\/cliqpiq\//) }.join("\n")
+      puts "*" * 50
+    end
+  end
+
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.

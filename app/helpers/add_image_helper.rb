@@ -55,12 +55,15 @@ module AddImageHelper
   def detach_image(image)
     # ignore if image has an album, dont detach
     # just because an event no longer matches it.
-    return if self.is_a?(Event) and image.album
+    return if self.is_a?(Event) and image.album_id
 
     # Keep track of images we've seen so we can display them
     if self.respond_to?(:scanned_images) 
       Event.incr_scanned_images(self.id)
     end
+
+    # No point detaching what isnt attached anyway
+    return nil if image.send(:"#{self.class.to_s.underscore}_id").nil?
 
     # Just in case
     return nil unless image.send(:"#{self.class.to_s.underscore}_id") == self.id
