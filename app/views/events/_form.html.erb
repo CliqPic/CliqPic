@@ -15,8 +15,14 @@
       </div>
 
       <div class="input-field col s12">
-        <%= label_tag 'event[date]', 'EVENT DATE' %>
-        <%= date_field_tag 'event[date]', (@event.start_time and @event.start_time.strftime('%F')), class: 'datepicker' %>
+        <%= label_tag 'event[start_date]', 'EVENT START DATE' %>
+        <%= date_field_tag 'event[start_date]', (@event.start_time and @event.start_time.strftime('%F')), class: 'datepicker' %>
+      </div>
+
+
+      <div class="input-field col s12">
+        <%= label_tag 'event[end_date]', 'EVENT END DATE' %>
+        <%= date_field_tag 'event[end_date]', (@event.end_time and @event.end_time.strftime('%F')), class: 'datepicker' %>
       </div>
 
       <div class="input-field col s6">

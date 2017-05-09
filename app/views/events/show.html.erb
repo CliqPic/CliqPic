@@ -8,7 +8,7 @@
     <div class="right thin" style="text-align: right; margin-top:<%=margin%>px;">
       <% if @event.start_time %>
       <div>
-        <p><%= @event.start_time.strftime('%D') %></p>
+        <p><%= @event.start_time.strftime('%D') %><%= @event.start_time.strftime('%D') == @event.end_time.strftime('%D') ? '' : "-#{@event.end_time.strftime('%D')}"%></p>
       </div>
       <% end %>
       <div><%=pluralize(@event.scanned_images, 'image')%> scanned <%= @event.image_process_counter > 0 ? 'so far' : ''%></div>

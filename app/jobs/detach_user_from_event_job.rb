@@ -6,7 +6,7 @@ class DetachUserFromEventJob < ApplicationJob
 
     # Don't detach users that still belong on the event
     # This should neatly cover cases where users share followers
-    return if event.users.any? { |u| u.id == user_id }
+    return if event.user_ids.any? { |id| id == user_id }
 
     event.images.where(user_id: user_id).each do |image|
       event.detach_image(image)

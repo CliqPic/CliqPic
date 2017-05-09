@@ -34,7 +34,7 @@ class EventsController < ApplicationController
     invites = ep.delete(:invitees)
 
     # Process incoming dates and times so that we end up with the right thing
-    ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
+    ep.merge!(process_times(ep.delete(:start_date), ep.delete(:end_date), ep[:start_time], ep[:end_time]))
     
     @event = current_user.events.new(ep)
 
@@ -59,7 +59,7 @@ class EventsController < ApplicationController
     invites = ep.delete(:invitees)
 
     # Process incoming dates and times so that we end up with the right thing
-    ep.merge!(process_times(ep.delete(:date), ep[:start_time], ep[:end_time]))
+    ep.merge!(process_times(ep.delete(:start_date), ep.delete(:end_date), ep[:start_time], ep[:end_time]))
 
     respond_to do |format|
       if @event.update(ep)
@@ -98,19 +98,20 @@ class EventsController < ApplicationController
     def event_params
       params.
         require(:event).
-        permit(:name, :date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags, :invitees, :search_public)
+        permit(:name, :start_date, :end_date, :start_time, :end_time, :location, :loc_lat, :loc_lon, :hashtags, :invitees, :search_public)
     end
 
-    def process_times(start_date, start_time, end_time)
+    def process_times(start_date, end_date, start_time, end_time)
       return { start_time: nil, end_time: nil } if start_date.blank?
 
-      parsed_date  = Date.parse(start_date).iso8601
+      parsed_start_date  = Date.parse(start_date).iso8601
+      parsed_end_date  = Date.parse(end_date).iso8601
 
       parsed_start = Time.zone.parse("#{start_time}").try(:strftime, '%T%:z') || ""
       parsed_end   = Time.zone.parse("#{end_time}").try(:strftime, '%T%:z') || ""
 
-      { start_time: (DateTime.parse("#{parsed_date}T#{parsed_start}")),
-        end_time:   (DateTime.parse("#{parsed_date}T#{parsed_end}"))
+      { start_time: (DateTime.parse("#{parsed_start_date}T#{parsed_start}")),
+        end_time:   (DateTime.parse("#{parsed_end_date}T#{parsed_end}"))
       }
     end
 end
