@@ -67,6 +67,13 @@ GEM
       xpath (~> 2.0)
     cliver (0.3.2)
     coderay (1.1.1)
+    coffee-rails (4.2.1)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0, < 5.2.x)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
     debug_inspector (0.0.2)
@@ -236,6 +243,8 @@ GEM
       sidekiq (>= 2.6)
       thor
     slop (3.6.0)
+    social-share-button (0.10.0)
+      coffee-rails
     spring (2.0.1)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -304,6 +313,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   sidekiq (~> 4.2, >= 4.2.10)
   sidekiq-unique-jobs (~> 4.0, >= 4.0.18)
+  social-share-button
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
