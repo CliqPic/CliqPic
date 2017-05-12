@@ -1,6 +1,11 @@
 <% share_image = @album.images.in_order.first.try(:thumbnail_url) %>
 
 <% content_for :head do %>
+  <!-- Additional Twitter tags -->
+  <meta name="twitter:title" content="<%= @album.name %>" />
+  <meta name="twitter:image" content="<%= share_image %>" />
+
+  <!-- Facebook meta tags -->
   <meta property="og:image" content="<%= share_image %>" />
   <link rel="image_src" href="<%= share_image %>" />
 <% end %>
@@ -11,7 +16,7 @@
       <small class='right thin'><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@album.images.count, 'image').upcase %></span></small>
       <%= @album.name %>&nbsp;
         <div style="display:inline-block">
-          <%= social_share_button_tag(@album.name, image: share_image, desc: "Check out my Album via CliqPiq!") %>
+          <%= social_share_button_tag(@album.name, image: share_image, desc: "Check out my Album via CliqPiq!", 'data-twitter-hashtags': 'CliqPic') %>
         </div>
     </h5>
   </div>
