@@ -1,10 +1,17 @@
+<% share_image = @album.images.in_order.first.try(:thumbnail_url) %>
+
+<% content_for :head do %>
+  <meta property="og:image" content="<%= share_image %>" />
+  <link rel="image_src" href="<%= share_image %>" />
+<% end %>
+
 <header class='card'>
   <div class='card-content'>
     <h5 class='card-title'>
       <small class='right thin'><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@album.images.count, 'image').upcase %></span></small>
       <%= @album.name %>&nbsp;
         <div style="display:inline-block">
-          <%= social_share_button_tag(@album.name, :image => @album.images.in_order.first.try(:thumbnail_url), desc: "Check out my Album via CliqPiq!") %>
+          <%= social_share_button_tag(@album.name, image: share_image, desc: "Check out my Album via CliqPiq!") %>
         </div>
     </h5>
   </div>
