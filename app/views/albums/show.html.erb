@@ -158,14 +158,16 @@
 
 
 <div id="image-view" class="modal modal-fixed-footer">
-  <div class="image-overlay">
-    <div class="previous-image">
-      <span class="material-icons">keyboard_arrow_left</span>
+  <% if @album.images.count > 1 %>
+    <div class="image-overlay">
+      <div class="previous-image">
+        <span class="material-icons">keyboard_arrow_left</span>
+      </div>
+      <div class="next-image">
+        <span class="material-icons">keyboard_arrow_right</span>
+      </div>
     </div>
-    <div class="next-image">
-      <span class="material-icons">keyboard_arrow_right</span>
-    </div>
-  </div>
+  <% end %>
   <div class="modal-content">
     <% @album.images.in_order.each do |image| %>
       <%= tag :img, src: image.high_res_url, id: "image-#{image.id}", 'data-order': image.order %>
