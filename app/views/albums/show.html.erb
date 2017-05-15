@@ -134,21 +134,9 @@
         <% end %>
         <div class='card-image'>
 
-          <%= link_to "#image-#{image.id}" do %>
+          <%= link_to "#image-view", class: 'view' do %>
             <%= tag :img, src: image.thumbnail_url %>
           <% end %>
-
-          <div id="<%="image-#{image.id}"%>" class="modal modal-fixed-footer">
-            <div class="modal-content">
-              <%= tag :img, src: image.high_res_url %>
-            </div>
-            <div class="modal-footer">
-              <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
-
-              <%= link_to "Full Screen View", image.high_res_url, target: '_blank', class: "modal-action modal-close waves-effect waves-green btn-flat" %>
-            </div>
-          </div>
-
 
           <div class="preloader-wrapper big hide">
             <div class="spinner-layer spinner-blue-only">
@@ -168,6 +156,30 @@
   <% end %>
 </div>
 
+
+<div id="image-view" class="modal modal-fixed-footer">
+  <% if @album.images.count > 1 %>
+    <div class="image-overlay">
+      <div class="previous-image">
+        <span class="material-icons">keyboard_arrow_left</span>
+      </div>
+      <div class="next-image">
+        <span class="material-icons">keyboard_arrow_right</span>
+      </div>
+    </div>
+  <% end %>
+  <div class="modal-content">
+    <% @album.images.in_order.each do |image| %>
+      <%= tag :img, src: image.high_res_url, id: "image-#{image.id}", 'data-order': image.order %>
+    <% end %>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+
+    <%= link_to "Full Screen View", '#!', target: '_blank', class: "modal-action waves-effect waves-green btn-flat view-image-full" %>
+  </div>
+</div>
+<%# TODO: Move JS out of this file %>
 <script>
  $(function() {
    var canDisplayError = true,
@@ -228,5 +240,95 @@
      var card = $(this).parents('.image');
      card.css({ 'min-height' : (card.width() - 1) + 'px' });
    });
- })
+ });
+
+ $('a.view').on('click', function(e) {
+   e.preventDefault();
+   e.stopImmediatePropagation();
+
+   var parent = $(this).parents('.image'),
+       id = parent.data('id'),
+       currImage = $('#image-' + id);
+
+   $('#image-view').modal('open');
+
+   $('#image-view img').hide();
+   currImage
+     .show()
+     .css({ left: '0', marginLeft: (($('#image-view').width() - currImage.width()) / 2) + 'px' });
+
+   $('a.view-image-full').attr('href', currImage.attr('src'));
+ });
+
+ $('.next-image').on('click', function() {
+   var currImage = $('#image-view img:visible'),
+       nextImage;
+
+   // Wrap around to the first image
+   if(currImage.is('#image-view img:last')) {
+     nextImage = $('#image-view img:first');
+   } else {
+     nextImage = currImage.next('img');
+   }
+
+   // Slide the next image in from the right
+
+   // Extra work is done here to ensure the image slides complete out of view
+   // and remains somewhat regular between images of different sizes.
+   // Particularly wide images will slide noticably faster, but smaller images
+   // should be fairly regular.
+   currImage
+     .finish()
+     .animate({
+       left: -Math.max(currImage.width(), $('#image-view').width()) + 'px',
+       marginLeft: '0px'
+     }, {
+       done: function() {
+         $(this).hide();
+       }
+     });
+
+   // the margin monkeying is to center the image in the modal
+   nextImage
+     .show()
+     .css({
+       left: '100%',
+       marginLeft: (($('#image-view').width() - nextImage.width()) / 2) + 'px'
+     })
+     .animate({ left: '0' });
+
+   $('#image-view .modal-content').scrollTop(0);
+   $('a.view-image-full').attr('href', nextImage.attr('src'));
+ });
+
+ $('.previous-image').on('click', function() {
+   var currImage = $('#image-view img:visible'),
+       prevImage;
+
+   // Wrap around to the last image
+   if(currImage.is('#image-view img:first')) {
+     prevImage = $('#image-view img:last');
+   } else {
+     prevImage = currImage.prev('img');
+   }
+
+   // Slide the previous image in from the left
+
+   currImage
+     .finish()
+     .animate({ left: '100%', marginLeft: '0px' }, {
+       done: function() {
+         $(this).hide();
+       }
+     });
+
+   // the margin monkeying is to center the image in the modal
+   prevImage
+     .show()
+     .css({ left: '-100%', marginLeft: (($('#image-view').width() - prevImage.width()) / 2) + 'px' })
+     .animate({ left: '0' });
+
+   $('#image-view .modal-content').scrollTop(0);
+   $('a.view-image-full').attr('href', prevImage.attr('src'));
+ });
 </script>
