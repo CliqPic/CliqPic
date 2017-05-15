@@ -5,6 +5,42 @@
     <% end %>
   <% end %>
 
+  <div class='fixed-action-btn'>
+    <a class='btn-floating btn-large blue darken-4'>
+      <i class='material-icons'>mode_edit</i>
+    </a>
+
+    <ul>
+      <li>
+        <%= link_to album.persisted? ? [@event, album] : @event, class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Cancel', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='material-icons'>arrow_back</i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to "#", onclick: "$('form').submit()", class: 'btn-floating blue darken-2 white-text tooltipped submit',
+          'data-tooltip': album.id ? "Update Album" : "Create Album", 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='fa fa-save'></i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to "#", onclick: "event.preventDefault(); $('.image-select input:not(:checked)').click()", class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'Select All', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='fa fa-object-group'></i>
+        <% end %>
+      </li>
+
+      <li>
+        <%= link_to "#", onclick: "event.preventDefault(); $('.image-select input:checked').click()", class: 'btn-floating blue darken-2 white-text tooltipped',
+          'data-tooltip': 'De-Select All', 'data-position': 'left', 'data-delay': '50' do %>
+          <i class='fa fa-object-ungroup'></i>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+
   <section class='card'>
     <div class='card-content'>
       <h5 class='card-title'><%= title %></h5>
@@ -15,8 +51,7 @@
     </div>
     <div class="card-action" style='text-align: right'>
       <strong class='left'>Select Images Below</strong>
-      <%= f.submit class: 'btn blue darken-4' %>
-      <%= link_to 'Cancel', album.persisted? ? [@event, album] : @event, class: 'btn grey' %>
+      <br />
     </div>
   </section>
 
