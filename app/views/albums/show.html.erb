@@ -156,179 +156,30 @@
   <% end %>
 </div>
 
+<%
+  #See Javascript snippet - this ends up INSIDE THE MODAL!
+%>
+<div class="carousel carousel-slider" data-indicators="true">
+  <% @album.images.in_order.each do |image| %>
+    <a target="_blank" href="<%=image.high_res_url%>" class="carousel-item"><%= tag :img, src: image.high_res_url, id: "image-#{image.id}", 'data-order': image.order %></a>
+  <% end %>
+</div>
 
 <div id="image-view" class="modal modal-fixed-footer">
-  <% if @album.images.count > 1 %>
-    <div class="image-overlay">
-      <div class="previous-image">
-        <span class="material-icons">keyboard_arrow_left</span>
-      </div>
-      <div class="next-image">
-        <span class="material-icons">keyboard_arrow_right</span>
-      </div>
-    </div>
-  <% end %>
   <div class="modal-content">
-    <% @album.images.in_order.each do |image| %>
-      <%= tag :img, src: image.high_res_url, id: "image-#{image.id}", 'data-order': image.order %>
-    <% end %>
   </div>
   <div class="modal-footer">
     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
-
-    <%= link_to "Full Screen View", '#!', target: '_blank', class: "modal-action waves-effect waves-green btn-flat view-image-full" %>
   </div>
 </div>
-<%# TODO: Move JS out of this file %>
+
 <script>
- $(function() {
-   var canDisplayError = true,
-       displayErrorsAgain = function() {
-         canDisplayError = true
-       },
-       list = document.getElementById('image-list'),
-       sortable = Sortable.create(list, {
-         handle: '.move',
-         draggable: '.col',
-         dataIdAttr: 'data-order',
-         onEnd: function() {
-           console.log('ending');
-           $('.image').each(function(idx) {
-             console.log(this.dataset.order, idx, this.dataset.order == (idx + 1));
-             var oldOrder = parseInt(this.dataset.order, 10),
-                 newOrder = idx + 1;
-
-             if(oldOrder !== newOrder) {
-               this.dataset.order = newOrder;
-
-               $.ajax({
-                 method: 'PUT',
-                 url: "<%= reorder_image_event_album_path(@event, @album) %>",
-                 data: {
-                   order: newOrder,
-                   image_id: this.dataset.id
-                 }
-               }).fail(function(jqXHR) {
-                 if(canDisplayError) {
-                   canDisplayError = false;
-                   Materialize.toast('Unable to reorder images', 2500, 'red accent-4 red-text text-lighten-5')
-                   setTimeout(displayErrorsAgain, 500);
-                 }
-               });
-             }
-           })
-         },
-       });
-
-   $('.edit').on('click', function() {
-     $('#edit-image-id').val($(this).parent().data('id'));
-   });
-
-   $('.image img').on('error', function() {
-     $(this).addClass('hide')
-            .parent()
-            .siblings('.preloader-wrapper')
-            .removeClass('hide').addClass('active');
-
-     this.src = this.src;  // try to reload the image
-   }).on('load',function() {
-     $(this).removeClass('hide')
-            .parent()
-            .siblings('.preloader-wrapper')
-            .removeClass('active').addClass('hide');
-   }).each(function() {
-     var card = $(this).parents('.image');
-     card.css({ 'min-height' : (card.width() - 1) + 'px' });
-   });
- });
-
- $('a.view').on('click', function(e) {
-   e.preventDefault();
-   e.stopImmediatePropagation();
-
-   var parent = $(this).parents('.image'),
-       id = parent.data('id'),
-       currImage = $('#image-' + id);
-
-   $('#image-view').modal('open');
-
-   $('#image-view img').hide();
-   currImage
-     .show()
-     .css({ left: '0', marginLeft: (($('#image-view').width() - currImage.width()) / 2) + 'px' });
-
-   $('a.view-image-full').attr('href', currImage.attr('src'));
- });
-
- $('.next-image').on('click', function() {
-   var currImage = $('#image-view img:visible'),
-       nextImage;
-
-   // Wrap around to the first image
-   if(currImage.is('#image-view img:last')) {
-     nextImage = $('#image-view img:first');
-   } else {
-     nextImage = currImage.next('img');
-   }
-
-   // Slide the next image in from the right
-
-   // Extra work is done here to ensure the image slides complete out of view
-   // and remains somewhat regular between images of different sizes.
-   // Particularly wide images will slide noticably faster, but smaller images
-   // should be fairly regular.
-   currImage
-     .finish()
-     .animate({
-       left: -Math.max(currImage.width(), $('#image-view').width()) + 'px',
-       marginLeft: '0px'
-     }, {
-       done: function() {
-         $(this).hide();
-       }
-     });
-
-   // the margin monkeying is to center the image in the modal
-   nextImage
-     .show()
-     .css({
-       left: '100%',
-       marginLeft: (($('#image-view').width() - nextImage.width()) / 2) + 'px'
-     })
-     .animate({ left: '0' });
-
-   $('#image-view .modal-content').scrollTop(0);
-   $('a.view-image-full').attr('href', nextImage.attr('src'));
- });
-
- $('.previous-image').on('click', function() {
-   var currImage = $('#image-view img:visible'),
-       prevImage;
-
-   // Wrap around to the last image
-   if(currImage.is('#image-view img:first')) {
-     prevImage = $('#image-view img:last');
-   } else {
-     prevImage = currImage.prev('img');
-   }
-
-   // Slide the previous image in from the left
-
-   currImage
-     .finish()
-     .animate({ left: '100%', marginLeft: '0px' }, {
-       done: function() {
-         $(this).hide();
-       }
-     });
-
-   // the margin monkeying is to center the image in the modal
-   prevImage
-     .show()
-     .css({ left: '-100%', marginLeft: (($('#image-view').width() - prevImage.width()) / 2) + 'px' })
-     .animate({ left: '0' });
-
-   $('#image-view .modal-content').scrollTop(0);
-   $('a.view-image-full').attr('href', prevImage.attr('src'));
- });
+$(function(){ 
+  // For some reason, rendering carousel in a modal causes it to be too sensitive
+  // to swiping. Rendering it outside and then moving it in with Jquery makes it work
+  // perfectly.
+  $('.carousel.carousel-slider').carousel({fullWidth: true});
+  var el = $('.carousel.carousel-slider').detach();
+  $('.modal-content').append(el);
+});
 </script>
