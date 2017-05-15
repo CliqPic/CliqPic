@@ -165,12 +165,7 @@
   <% end %>
 </div>
 
-<div id="image-view" class="modal modal-fixed-footer">
-  <div class="modal-content">
-  </div>
-  <div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
-  </div>
+<div id="image-view" class="modal">
 </div>
 
 <script>
@@ -180,6 +175,6 @@ $(function(){
   // perfectly.
   $('.carousel.carousel-slider').carousel({fullWidth: true});
   var el = $('.carousel.carousel-slider').detach();
-  $('.modal-content').append(el);
+  $('.modal').append(el);
 });
 </script>
