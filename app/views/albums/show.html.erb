@@ -134,7 +134,7 @@
         <% end %>
         <div class='card-image'>
 
-          <%= link_to "#image-view", class: 'view' do %>
+          <%= link_to "##{image.id}", class: 'view', onclick: '' do %>
             <%= tag :img, src: image.thumbnail_url %>
           <% end %>
 
@@ -159,22 +159,40 @@
 <%
   #See Javascript snippet - this ends up INSIDE THE MODAL!
 %>
-<div class="carousel carousel-slider" data-indicators="true">
-  <% @album.images.in_order.each do |image| %>
-    <a target="_blank" href="<%=image.high_res_url%>" class="carousel-item"><%= tag :img, src: image.high_res_url, id: "image-#{image.id}", 'data-order': image.order %></a>
-  <% end %>
-</div>
+
 
 <div id="image-view" class="modal">
+  <div class="owl-carousel owl-theme">
+    <% @album.images.in_order.each do |image| %>
+      <div class="item" style="width:450px; height: 450px;" data-hash="<%=image.id%>"><a target="_blank" href="<%=image.high_res_url%>" class="carousel-item"><%= tag :img, src: image.high_res_url, id: "image-#{image.id}"%></a></div>
+    <% end %>
+  </div>
 </div>
 
 <script>
 $(function(){ 
-  // For some reason, rendering carousel in a modal causes it to be too sensitive
-  // to swiping. Rendering it outside and then moving it in with Jquery makes it work
-  // perfectly.
-  $('.carousel.carousel-slider').carousel({fullWidth: true});
-  var el = $('.carousel.carousel-slider').detach();
-  $('.modal').append(el);
+  $('.owl-carousel').owlCarousel({
+    margin:10,
+    loop:true,
+    center: true,
+    autoWidth:true,
+    responsiveClass:true,
+    URLhashListener:true,
+    items: 1,
+    nav: true,
+    navElement: 'div',
+    navText: ['',''],
+    dots: <%=@album.images.count < 10%>
+})
+
+  $(".view").click(function(e) {
+    // Okay so prevent default keeps the hash change from happening. The hash change happens
+    // before hte modal can be opened. It's not good.
+    e.preventDefault();
+    $('#image-view').modal('open');
+    $(".owl-next").removeClass("owl-next").addClass("btn-floating blue").append("<i class='material-icons'>arrow_forward</i>").css("margin-left", "10px")
+    $(".owl-prev").removeClass("owl-prev").addClass("btn-floating blue").append("<i class='material-icons'>arrow_back</i>").css("margin-right", "10px")
+  })
+
 });
 </script>

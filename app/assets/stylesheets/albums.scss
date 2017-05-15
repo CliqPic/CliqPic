@@ -1,8 +1,13 @@
 // Place all the styles related to the Albums controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.carousel-slider {
-    height: 400px !important;
+
+#image-view {
+  overflow-y: visible;
+  background-color:rgba(0,0,0,0);
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
 }
 .image-select .card {
   opacity: 0.6;

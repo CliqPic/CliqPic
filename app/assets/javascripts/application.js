@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require social-share-button
+//= require owl.carousel.min.js
 //= require_tree .
