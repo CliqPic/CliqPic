@@ -1,4 +1,4 @@
-<% share_image = @album.images.in_order.first.try(:thumbnail_url) %>
+<% share_image = @album.images.in_order.first.try(:low_res_url) %>
 
 <% content_for :head do %>
   <!-- Additional Twitter tags -->
@@ -7,6 +7,8 @@
 
   <!-- Facebook meta tags -->
   <meta property="og:image" content="<%= share_image %>" />
+  <meta property="og:title" content="<%=@album.name %>" />
+  <meta property="og:url" content="http://app.cliq-pic.com/events/<%=@album.event_id%>/albums/<%=@album.id%>" />
   <link rel="image_src" href="<%= share_image %>" />
 <% end %>
 
