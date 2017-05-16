@@ -1,9 +1,7 @@
 // Place all the styles related to the Albums controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.carousel-slider {
-    height: 400px !important;
-}
+
 .image-select .card {
   opacity: 0.6;
   cursor: pointer;
@@ -66,6 +64,63 @@
       &:hover {
         opacity: 1;
       }
+    }
+  }
+}
+
+#image-view {
+  .modal-content {
+    padding: 0;
+
+    overflow-x: hidden;
+
+    img {
+      position: absolute;
+      display: none;
+      height: 100%;
+    }
+  }
+
+  &:hover .image-overlay > div {
+    opacity: 0.7;
+  }
+
+  .image-overlay {
+    & > div {
+      position: absolute;
+      top: 0;
+      bottom: 56px;
+      z-index: 1;
+
+      color: #fff;
+      opacity: 0;
+
+      width: 10%;
+
+      cursor: pointer;
+
+      transition: opacity 0.5s;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      .material-icons {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -35px;
+        font-size: 70px;
+        text-shadow: 0 0 1px #000;
+      }
+    }
+
+    .next-image {
+      right: 0;
+    }
+
+    .previous-image {
+      left: 0;
     }
   }
 }
