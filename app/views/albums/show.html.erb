@@ -1,4 +1,4 @@
-<% share_image = @album.images.in_order.first.try(:low_res_url) %>
+<% share_image = @album.images.in_order.first.try(:high_res_url) %>
 
 <% content_for :head do %>
   <!-- Additional Twitter tags -->
