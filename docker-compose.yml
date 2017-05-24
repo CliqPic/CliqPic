@@ -3,15 +3,15 @@ version: '2'
 services:
   server:
     build: .
-    image: amdirent/cliq-pic:0.0.69
+    image: amdirent/cliq-pic:0.0.70
     network_mode: 'host'
     env_file: docker-compose.env
     ports:
-      - '30.0.6900'
+      - '30.0.7000'
 
   sidekiq:
     build: .
-    image: amdirent/cliq-pic:0.0.69
+    image: amdirent/cliq-pic:0.0.70
     network_mode: 'host'
     env_file: docker-compose.env
     command: [bundle, exec, sidekiq]
