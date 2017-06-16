@@ -18,7 +18,7 @@
       <small class='right thin'><span class="new badge" style="margin-left: 0px" data-badge-caption=""><%= pluralize(@album.images.count, 'image').upcase %></span></small>
       <%= @album.name %>&nbsp;
         <div style="display:inline-block">
-          <%= social_share_button_tag(@album.name, image: share_image, desc: "Check out my Album via CliqPiq!", 'data-twitter-hashtags': 'CliqPic') %>
+          <%= social_share_button_tag(@album.name, image: share_image, desc: "Check out my Album via CliqPic!", 'data-twitter-hashtags': 'CliqPic') %>
         </div>
     </h5>
   </div>
