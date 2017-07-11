@@ -16,6 +16,6 @@ class StaticController < ApplicationController
   def redirect_prod_login
     # Ensure that no flash messages are carried over to the next login
     flash.clear
-    redirect_to '/users/auth/instagram'
+    redirect_to 'http://www.cliqpic.com'
   end
 end
