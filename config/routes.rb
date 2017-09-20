@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount ForestLiana::Engine => '/forest'
   get '/invite/:invite_hash', to: 'invitation#invite', as: 'invite'
 
   resources :events do

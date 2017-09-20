@@ -1,6 +1,6 @@
 class Album < ApplicationRecord
   belongs_to :event
-  has_one :user, through: :event
+  has_one :owner, through: :event
   has_many :images
 
   validates :name, presence: true
